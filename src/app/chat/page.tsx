@@ -15,9 +15,13 @@ export default function ChatPage() {
 
   return (
     <main className="lu:max-w-3xl lu:mx-auto lu:p-6 lu:space-y-6">
-      <header className="lu:sticky lu:top-0 lu:bg-white/80 lu:backdrop-blur lu:z-10">
-        <h1 className="lu:text-xl lu:font-medium lu:py-3">LUCAI — Chat (MVP)</h1>
-      </header>
+
+      <div className="she-header she-blur-yes lu:w-full lu:bg-white/70 lu:backdrop-blur">
+        <div className="lu:max-w-6xl lu:mx-auto lu:flex lu:items-center lu:justify-between lu:px-4 lu:py-3">
+          <img src="/brand/logo.png" alt="LUCAI" width={160} height={36} />
+        </div>
+      </div>
+      <div className="lu:h-[64px]" /> {/* spacer por header fijo */}
 
       <section className="lu:border lu:border-slate-200 lu:bg-white lu:rounded-2xl lu:shadow lu:p-5">
         <div className="lu:min-h-[120px] lu:text-slate-700">

@@ -1,14 +1,7 @@
-/* Cargamos solo lo necesario: theme + utilities con prefijo.
-   Esto evita el Preflight (no resetea estilos globales) y
-   nos da utilidades con prefijo `lu:` para no chocar con WP. */
-
 @layer theme, utilities;
+@import "tailwindcss/theme"      layer(theme)     prefix(lu);
+@import "tailwindcss/utilities"  layer(utilities) prefix(lu);
 
-/* Variables y tokens de Tailwind */
-@import "tailwindcss/theme" layer(theme);
-
-/* Utilidades con prefijo `lu:` */
-@import "tailwindcss/utilities" layer(utilities) prefix(lu);
-
-/* --- opcional: helpers propios -------------------------- */
-/* .lu-card { @apply lu:bg-white lu:rounded-2xl lu:shadow; } */
+:root{
+  --lu-accent:#ff6900; --lu-border:#e5e7eb;
+}
