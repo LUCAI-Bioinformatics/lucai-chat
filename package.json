@@ -6,10 +6,8 @@
     "build:lucai-css": "postcss styles/vendor/lucai/index.css -o public/vendor/lucai.scoped.css --config postcss.lucai.cjs",
     "predev": "npm run build:lucai-css",
     "prebuild": "npm run build:lucai-css",
-
     "dev": "cross-env NEXT_DISABLE_TURBOPACK=1 next dev",
     "build": "cross-env NEXT_DISABLE_TURBOPACK=1 next build",
-
     "start": "next start",
     "lint": "eslint"
   },

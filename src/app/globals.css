@@ -1,7 +1,44 @@
-@layer theme, utilities;
-@import "tailwindcss/theme"      layer(theme)     prefix(lu);
-@import "tailwindcss/utilities"  layer(utilities) prefix(lu);
+/* Tailwind v4, simple (incluye preflight+utilities) */
+@import "tailwindcss";
 
+/* ===== TOKENS LUCAI (dark) ===== */
 :root{
-  --lu-accent:#ff6900; --lu-border:#e5e7eb;
+  --lu-bg:        #0b0b0b;   /* fondo negro */
+  --lu-text:      #f5f6f7;   /* texto claro */
+  --lu-subtle:    #b7bdc7;   /* texto secundario */
+  --lu-surface:   #121212;   /* cards/inputs */
+  --lu-border:    #262626;   /* bordes */
+  --lu-accent:    #ff6900;   /* naranja LUCAI */
+  --lu-amber:     #fcb900;   /* amarillo LUCAI */
+  --lu-cta-grad:  linear-gradient(135deg,var(--lu-amber) 0%,var(--lu-accent) 100%);
+  --lu-shadow:    0 10px 30px rgba(0,0,0,.35);
+  --lu-radius:    16px;
+}
+
+/* ===== HELPERS (puro CSS, sin @apply) ===== */
+.card-dark {
+  background: var(--lu-surface);
+  color: var(--lu-text);
+  border: 1px solid var(--lu-border);
+  border-radius: var(--lu-radius);
+  box-shadow: var(--lu-shadow);
+  padding: 20px;
+}
+.input-dark {
+  width: 100%;
+  background: var(--lu-surface);
+  color: var(--lu-text);
+  border: 1px solid var(--lu-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+  font-weight:500; border-radius:9999px; padding:.5rem 1.25rem; transition:all .2s ease; }
+.btn-cta { color:white; background: var(--lu-cta-grad); box-shadow: var(--lu-shadow); }
+.header-dark {
+  position: sticky; top: 0; z-index: 20; width: 100%;
+  backdrop-filter: blur(8px);
+  background: color-mix(in oklab, black 60%, transparent);
+  border-bottom: 1px solid var(--lu-border);
 }
