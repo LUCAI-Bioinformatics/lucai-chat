@@ -1,26 +1,14 @@
-@import "tailwindcss";
+/* Cargamos solo lo necesario: theme + utilities con prefijo.
+   Esto evita el Preflight (no resetea estilos globales) y
+   nos da utilidades con prefijo `lu:` para no chocar con WP. */
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer theme, utilities;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Variables y tokens de Tailwind */
+@import "tailwindcss/theme" layer(theme);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Utilidades con prefijo `lu:` */
+@import "tailwindcss/utilities" layer(utilities) prefix(lu);
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* --- opcional: helpers propios -------------------------- */
+/* .lu-card { @apply lu:bg-white lu:rounded-2xl lu:shadow; } */
