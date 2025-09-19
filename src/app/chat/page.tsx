@@ -12,8 +12,9 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", { method: "POST", body: input });
       const text = await res.text();
       setAnswer(res.ok ? text : `Error ${res.status}: ${text}`);
-    } catch (e:any) {
-      setAnswer(`Error de red: ${e?.message ?? e}`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setAnswer(`Error de red: ${msg}`);
     }
   };
 
