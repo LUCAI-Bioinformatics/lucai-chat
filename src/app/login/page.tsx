@@ -7,33 +7,28 @@ import { useState } from "react";
 export default function LoginPage() {
   const r = useRouter();
   const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [show, setShow] = useState(false);
+  const [pass, setPass]   = useState("");
+  const [show, setShow]   = useState(false);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email || !pass) return;
-    // Dummy auth
     localStorage.setItem("lu_isAuthed", "1");
     r.push("/chat");
   };
 
   return (
     <main className="relative min-h-screen flex items-center justify-center px-6 py-16">
-      {/* Fondo hexagonal */}
       <div className="hex-bg" aria-hidden />
 
       <div className="panel-lg w-full">
-        {/* Logo */}
         <div className="flex items-center justify-center mb-8">
           <Image src="/brand/logo.png" alt="LUCAI" width={160} height={36} priority />
         </div>
 
-        {/* Título estilo LUCAI */}
         <h2 className="kicker">Ready to unlock your true potential?</h2>
 
-        {/* Login form */}
-        <form onSubmit={onSubmit} className="mx-auto max-w-3xl space-y-4">
+        <form onSubmit={onSubmit} className="mx-auto max-w-3xl grid gap-6">
           <input
             className="pill-input"
             placeholder="Email"
@@ -43,9 +38,10 @@ export default function LoginPage() {
             autoComplete="email"
             required
           />
+
           <div className="relative">
             <input
-              className="pill-input w-full pr-12"
+              className="pill-input w-full pr-14"
               placeholder="Password"
               type={show ? "text" : "password"}
               value={pass}
@@ -55,23 +51,21 @@ export default function LoginPage() {
             />
             <button
               type="button"
-              onClick={() => setShow((s) => !s)}
-              aria-label={show ? "Ocultar contraseña" : "Mostrar contraseña"}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[color:var(--lu-subtle)] hover:text-[color:var(--lu-accent)] focus:outline-none"
+              onClick={() => setShow(s => !s)}
+              aria-label={show ? "Hide password" : "Show password"}
+              className="eye-btn"
             >
               {show ? (
-                /* eye-off */
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                    strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                     strokeLinecap="round" strokeLinejoin="round">
                   <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-5 0-9.27-3.11-11-8 1.03-2.89 2.99-5.23 5.5-6.74"/>
                   <path d="M1 1l22 22"/>
                   <path d="M9.88 9.88A3 3 0 0 0 12 15a3 3 0 0 0 2.12-.88"/>
                   <path d="M10.73 5.08A10.94 10.94 0 0 1 12 4c5 0 9.27 3.11 11 8a11.66 11.66 0 0 1-2.62 3.95"/>
                 </svg>
               ) : (
-                /* eye */
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                    strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                     strokeLinecap="round" strokeLinejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
                   <circle cx="12" cy="12" r="3"/>
                 </svg>
@@ -79,7 +73,7 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <button type="submit" className="btn-cta-block">Submit</button>
+          <button type="submit" className="btn-outline btn-enter">Enter</button>
         </form>
       </div>
     </main>

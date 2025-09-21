@@ -10,17 +10,17 @@ const roboto = Roboto({
 export const metadata = {
   title: "LUCAI — Chat",
   description: "Login + Chat",
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es-AR">
-      <head>
-        {}
-        <link rel="stylesheet" href="/vendor/lucai.scoped.css" />
-        <meta name="robots" content="noindex,nofollow" />
-      </head>
-      <body id="lucai-app" className={roboto.className} style={{ background: "#0b0b0b", color: "var(--lu-text)" }}>
+      <body
+        id="lucai-app"
+        className={roboto.className}
+        style={{ background: "#0b0b0b", color: "var(--lu-text)" }}
+      >
         {children}
       </body>
     </html>
