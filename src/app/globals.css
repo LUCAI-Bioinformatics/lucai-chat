@@ -1,44 +1,170 @@
-/* Tailwind v4, simple (incluye preflight+utilities) */
 @import "tailwindcss";
+/* Metemos el vendor en una capa para que sea más fácil sobreescribir */
+@import url("/vendor/lucai.scoped.css") layer(vendor);
 
-/* ===== TOKENS LUCAI (dark) ===== */
+/* ============== TOKENS (LUCAI dark) ============== */
 :root{
-  --lu-bg:        #0b0b0b;   /* fondo negro */
-  --lu-text:      #f5f6f7;   /* texto claro */
-  --lu-subtle:    #b7bdc7;   /* texto secundario */
-  --lu-surface:   #121212;   /* cards/inputs */
-  --lu-border:    #262626;   /* bordes */
-  --lu-accent:    #ff6900;   /* naranja LUCAI */
-  --lu-amber:     #fcb900;   /* amarillo LUCAI */
+  --lu-bg:        #0b0b0b;
+  --lu-text:      #f5f6f7;
+  --lu-subtle:    #cdd3db;
+  --lu-surface:   #111111;
+  --lu-border:    #262626;
+  --lu-accent:    #ff6900;   /* naranja */
+  --lu-amber:     #fcb900;   /* amarillo */
   --lu-cta-grad:  linear-gradient(135deg,var(--lu-amber) 0%,var(--lu-accent) 100%);
-  --lu-shadow:    0 10px 30px rgba(0,0,0,.35);
-  --lu-radius:    16px;
+  --lu-shadow:    0 20px 60px rgba(0,0,0,.35);
+  --lu-radius:    28px;
+  --send-w:       130px;     /* ancho mínimo del botón Send/Enter */
 }
 
-/* ===== HELPERS (puro CSS, sin @apply) ===== */
-.card-dark {
-  background: var(--lu-surface);
-  color: var(--lu-text);
-  border: 1px solid var(--lu-border);
-  border-radius: var(--lu-radius);
-  box-shadow: var(--lu-shadow);
-  padding: 20px;
-}
-.input-dark {
-  width: 100%;
-  background: var(--lu-surface);
-  color: var(--lu-text);
-  border: 1px solid var(--lu-border);
-  border-radius: 12px;
-  padding: 10px 12px;
-  outline: none;
-}
-.btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
-  font-weight:500; border-radius:9999px; padding:.5rem 1.25rem; transition:all .2s ease; }
-.btn-cta { color:white; background: var(--lu-cta-grad); box-shadow: var(--lu-shadow); }
-.header-dark {
-  position: sticky; top: 0; z-index: 20; width: 100%;
+body{ background:var(--lu-bg); color:var(--lu-text); }
+
+/* Cabecera */
+.header-dark{
+  position:sticky; top:0; z-index:20; width:100%;
   backdrop-filter: blur(8px);
-  background: color-mix(in oklab, black 60%, transparent);
+  background: color-mix(in oklab, #000 60%, transparent);
   border-bottom: 1px solid var(--lu-border);
+}
+
+/* Fondo hexagonal opcional */
+.hex-bg{
+  position:absolute; inset:0;
+  background:
+    url("/brand/hexagon.png") center / clamp(720px, 70vw, 1200px) no-repeat,
+    var(--lu-bg);
+  opacity:.18; filter:saturate(140%) brightness(.95);
+  pointer-events:none;
+}
+
+/* Panel grande (login/contact) */
+.panel-lg{
+  max-width:980px; margin:0 auto; padding:64px 48px;
+  background:var(--lu-surface);
+  border:1px solid var(--lu-border);
+  border-radius:var(--lu-radius);
+  box-shadow:var(--lu-shadow);
+}
+.kicker{
+  text-align:center; color:var(--lu-subtle); font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; line-height:1.1;
+  font-size:clamp(28px, 4.2vw, 56px); margin-bottom:40px;
+}
+
+/* ============== Inputs “píldora” ============== */
+.pill-input, .pill-textarea{
+  width:100%; color:var(--lu-text); background:transparent; outline:none;
+  border:2px solid var(--lu-accent); transition: box-shadow .2s ease;
+}
+.pill-input{ height:48px; border-radius:9999px; padding:0 16px; }
+.pill-textarea{ min-height:110px; border-radius:20px; padding:12px 16px; resize:vertical; }
+.pill-input::placeholder, .pill-textarea::placeholder{ color:#9aa3ad; }
+.pill-input:focus, .pill-textarea:focus{
+  box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 35%, transparent);
+}
+
+/* Evitar autofill blanco/amarillo (Chrome) */
+.pill-input:-webkit-autofill,
+.pill-input:-webkit-autofill:hover,
+.pill-input:-webkit-autofill:focus{
+  -webkit-text-fill-color: var(--lu-text);
+  caret-color: var(--lu-text);
+  box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 9999s ease-out 0s;
+  background-color: transparent !important;
+}
+.pill-input, .pill-input:focus{ background-color:transparent !important; }
+
+/* ============== Botones (override vendor) ============== */
+
+/* 1) “Outline” (Se usa en Send y en Enter para que sean iguales) */
+#lucai-app button.btn-outline[type="submit"]{
+  all: unset;                            /* mata estilos del vendor SOLO en nuestros botones */
+  box-sizing: border-box;
+  display:inline-flex; align-items:center; justify-content:center;
+  height:44px; min-width:var(--send-w); padding:0 24px;
+  border-radius:12px; border:2px solid var(--lu-accent);
+  background:transparent; color:var(--lu-accent);
+  font:inherit; font-weight:600; cursor:pointer;
+  transition: background-color .2s ease, color .2s ease, transform .06s ease;
+}
+#lucai-app button.btn-outline[type="submit"]:hover{
+  background:var(--lu-accent); color:#111;
+}
+#lucai-app button.btn-outline[type="submit"]:active{ transform:translateY(1px); }
+#lucai-app button.btn-outline[type="submit"]:focus-visible{
+  outline:0; box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 35%, transparent);
+}
+
+/* 2) CTA lleno (si lo necesitás en otras vistas) */
+#lucai-app .btn-cta-block{
+  all: unset;
+  box-sizing: border-box;
+  display:block; width:100%; height:48px; border-radius:9999px;
+  border:2px solid var(--lu-accent); background:var(--lu-cta-grad);
+  color:#111; font-weight:600; text-align:center;
+  box-shadow:0 10px 30px rgba(255,105,0,.25);
+  transition: transform .06s ease, filter .2s ease;
+}
+#lucai-app .btn-cta-block:hover{ filter:brightness(1.05); }
+#lucai-app .btn-cta-block:active{ transform:translateY(1px); }
+
+/* 3) Botón del “ojo” dentro del input (naranja) */
+#lucai-app .eye-btn{
+  all: unset;
+  box-sizing: border-box;
+  position:absolute; right:6px; top:50%; transform:translateY(-50%);
+  width:36px; height:36px; display:grid; place-items:center;
+  border-radius:8px; border:2px solid var(--lu-accent);
+  color:var(--lu-accent); background:transparent; cursor:pointer;
+  transition: background-color .2s ease, color .2s ease, transform .06s ease;
+}
+#lucai-app .eye-btn:hover{ background:var(--lu-accent); color:#111; }
+#lucai-app .eye-btn:active{ transform:translateY(-50%) scale(.98); }
+#lucai-app .eye-btn:focus-visible{
+  outline:0; box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 35%, transparent);
+}
+
+/* “Enter” alineado a la derecha en el login (mismo estilo que Send) */
+#lucai-app .btn-enter{ margin-left:auto; }
+
+/* ============== Marca ============== */
+.brand-logo{ width:clamp(160px, 16vw, 220px); height:auto; }
+.brand-sphere{
+  width:clamp(96px, 10vw, 140px); height:auto;
+  filter: drop-shadow(0 12px 30px rgba(255,105,0,.35));
+}
+
+/* ============== Chat ============== */
+.chat-board{
+  background: color-mix(in oklab, var(--lu-bg) 90%, #1b1e20);
+  border: 1px solid color-mix(in oklab, var(--lu-bg) 70%, #2a2e31);
+  border-radius: var(--lu-radius);
+  padding:22px 28px;
+  height: clamp(560px, 70vh, 880px);
+  overflow:auto;
+  scrollbar-width: thin;
+  scrollbar-color:#2a2b2e transparent;
+}
+.chat-board::-webkit-scrollbar{ width:10px; }
+.chat-board::-webkit-scrollbar-thumb{ background:#2a2b2e; border-radius:10px; }
+
+.chat-thread{ display:flex; flex-direction:column; gap:10px; min-height:220px; }
+.bubble{ max-width:85%; padding:10px 14px; border-radius:16px; line-height:1.55; }
+.bubble-user{ margin-left:auto; background:#171717; border:1px solid var(--lu-border); }
+.bubble-bot{  margin-right:auto; background:#0f1214; border:1px solid #1d2a22; }
+
+.input-dock{
+  position:fixed; left:0; right:0; bottom:0; z-index:20;
+  padding:14px 0 calc(env(safe-area-inset-bottom) + 18px);
+  background:linear-gradient(180deg, rgba(11,11,11,0) 0%, rgba(11,11,11,.92) 40%, rgba(11,11,11,1) 100%);
+  backdrop-filter: blur(6px);
+}
+
+#lucai-app .input-dock form{ position:relative !important; }
+#lucai-app .dock-textarea{ padding-right: calc(var(--send-w) + 12px); }
+
+#lucai-app .send-btn{
+  position:absolute; right:24px; bottom:18px;
+  height:44px; min-width:var(--send-w); z-index:1;
 }
