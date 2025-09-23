@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type Msg = { role: "user" | "bot"; text: string };
@@ -27,10 +28,7 @@ export default function ChatPage() {
   // autoscroll del board
   const boardRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    boardRef.current?.scrollTo({
-      top: boardRef.current.scrollHeight,
-      behavior: "smooth",
-    });
+    boardRef.current?.scrollTo({ top: boardRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs]);
 
   const ask = async () => {
@@ -53,26 +51,41 @@ export default function ChatPage() {
   };
 
   return (
-    <main id="lucai-app" className="min-h-screen pb-[var(--dock-h,120px)]">
+    <main id="lucai-app" className="min-h-screen pb-[var(--dock-h,120px)] relative">
+      {/* HEX super zoom para chat */}
+      <div className="hex-zoomed hex-zoomed--chat" aria-hidden />
+
       {/* HEADER */}
       <header className="header-dark">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-4">
-          <Image
-            src="/brand/logo.png"
-            alt="LUCAI"
-            width={180}
-            height={40}
-            className="brand-logo"
-            priority
-          />
-          <Image
-            src="/brand/pelota-luca.png"
-            alt=""
-            width={120}
-            height={120}
-            className="brand-sphere"
-            priority
-          />
+          {/* logo LUCAI → sitio */}
+          <a
+            href="https://lucai.bio/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Ir a lucai.bio"
+          >
+            <Image
+              src="/brand/logo.png"
+              alt="LUCAI"
+              width={180}
+              height={40}
+              className="brand-logo"
+              priority
+            />
+          </a>
+
+          {/* esfera → Home (/). Si preferís /home, cambiá href */}
+          <Link href="/" aria-label="Volver a la Home">
+            <Image
+              src="/brand/pelota-luca.png"
+              alt=""
+              width={120}
+              height={120}
+              className="brand-sphere"
+              priority
+            />
+          </Link>
         </div>
       </header>
       <div className="h-[68px]" />
@@ -98,6 +111,7 @@ export default function ChatPage() {
         <form
           onSubmit={onSubmitDock}
           className="max-w-6xl mx-auto px-4 pb-3 relative"
+          style={{ "--send-w": "72px" } as React.CSSProperties} // padding-right del textarea
         >
           <textarea
             ref={taRef}
@@ -115,9 +129,11 @@ export default function ChatPage() {
             className="pill-textarea dock-textarea resize-none w-full"
             autoFocus
           />
+
+          {/* Send SOLO TEXTO (sin borde) */}
           <button
             type="submit"
-            className="btn-outline send-btn"
+            className="send-text"
             disabled={!input.trim()}
           >
             Send

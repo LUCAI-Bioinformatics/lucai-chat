@@ -1,7 +1,5 @@
 @import "tailwindcss";
-/* Metemos el vendor en una capa para que sea más fácil sobreescribir */
 @import url("/vendor/lucai.scoped.css") layer(vendor);
-
 /* ============== TOKENS (LUCAI dark) ============== */
 :root{
   --lu-bg:        #0b0b0b;
@@ -77,49 +75,43 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
 
 /* ============== Botones (override vendor) ============== */
 
-/* 1) “Outline” (Se usa en Send y en Enter para que sean iguales) */
-#lucai-app button.btn-outline[type="submit"]{
-  all: unset;                            /* mata estilos del vendor SOLO en nuestros botones */
-  box-sizing: border-box;
-  display:inline-flex; align-items:center; justify-content:center;
-  height:44px; min-width:var(--send-w); padding:0 24px;
-  border-radius:12px; border:2px solid var(--lu-accent);
-  background:transparent; color:var(--lu-accent);
-  font:inherit; font-weight:600; cursor:pointer;
-  transition: background-color .2s ease, color .2s ease, transform .06s ease;
-}
-#lucai-app button.btn-outline[type="submit"]:hover{
-  background:var(--lu-accent); color:#111;
-}
-#lucai-app button.btn-outline[type="submit"]:active{ transform:translateY(1px); }
-#lucai-app button.btn-outline[type="submit"]:focus-visible{
-  outline:0; box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 35%, transparent);
-}
-
-/* 2) CTA lleno (si lo necesitás en otras vistas) */
-#lucai-app .btn-cta-block{
+/* Outline común (Send / Enter / AI Chat)  */
+#lucai-app .btn-outline{
   all: unset;
   box-sizing: border-box;
-  display:block; width:100%; height:48px; border-radius:9999px;
-  border:2px solid var(--lu-accent); background:var(--lu-cta-grad);
-  color:#111; font-weight:600; text-align:center;
-  box-shadow:0 10px 30px rgba(255,105,0,.25);
-  transition: transform .06s ease, filter .2s ease;
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 44px; min-width: var(--send-w); padding: 0 24px;
+  border-radius: 12px; border: 2px solid var(--lu-accent);
+  background: transparent; color: var(--lu-accent);
+  font: inherit; font-weight: 600; cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, transform .06s ease, filter .2s ease;
 }
-#lucai-app .btn-cta-block:hover{ filter:brightness(1.05); }
-#lucai-app .btn-cta-block:active{ transform:translateY(1px); }
+#lucai-app .btn-outline:hover{
+  background: var(--lu-accent); color: #111;
+}
+#lucai-app .btn-outline:active{ transform: translateY(1px); }
 
-/* 3) Botón del “ojo” dentro del input (naranja) */
+#lucai-app .btn-enter{ margin-left: auto; }
+
+/* Ojo por defecto (con marco) */
 #lucai-app .eye-btn{
   all: unset;
   box-sizing: border-box;
   position:absolute; right:6px; top:50%; transform:translateY(-50%);
   width:36px; height:36px; display:grid; place-items:center;
-  border-radius:8px; border:2px solid var(--lu-accent);
-  color:var(--lu-accent); background:transparent; cursor:pointer;
-  transition: background-color .2s ease, color .2s ease, transform .06s ease;
+  cursor:pointer; color:var(--lu-accent);
+  transition: filter .2s ease, transform .06s ease;
 }
-#lucai-app .eye-btn:hover{ background:var(--lu-accent); color:#111; }
+#lucai-app .eye-btn:focus-visible{
+  outline:0; box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 35%, transparent);
+  border-radius:10px;
+}
+#lucai-app .eye-btn:hover{ filter: brightness(1.15); }
+
+
+#lucai-app .eye-btn.eye-ghost{
+}
+
 #lucai-app .eye-btn:active{ transform:translateY(-50%) scale(.98); }
 #lucai-app .eye-btn:focus-visible{
   outline:0; box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 35%, transparent);
@@ -135,16 +127,46 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
   filter: drop-shadow(0 12px 30px rgba(255,105,0,.35));
 }
 
+/* Chat: aún más zoom que Home */
+.hex-zoomed--chat{
+  background:
+    url("/brand/hexagon.png") center/5600px no-repeat, /* más grande que 4200 de Home */
+    var(--lu-bg);
+  opacity: .10;
+  filter: saturate(170%) brightness(.9);
+}
+
+/* Botón “Send” solo texto, posicionado como antes */
+#lucai-app .send-text{
+  all: unset;
+  position: absolute;
+  right: 24px;
+  bottom: 18px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  color: var(--lu-accent);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .2s ease, transform .06s ease, filter .2s ease;
+}
+#lucai-app .send-text:hover{ filter: brightness(1.15); }
+#lucai-app .send-text:active{ transform: translateY(1px); }
+#lucai-app .send-text[disabled]{ opacity:.5; cursor:not-allowed; }
+
 /* ============== Chat ============== */
-.chat-board{
-  background: color-mix(in oklab, var(--lu-bg) 90%, #1b1e20);
-  border: 1px solid color-mix(in oklab, var(--lu-bg) 70%, #2a2e31);
+.chat-board {
+  background: color-mix(in oklab, var(--lu-bg) 75%, #1b1e20 25%);
+  border: 1px solid color-mix(in oklab, var(--lu-bg) 65%, #2a2e31);
   border-radius: var(--lu-radius);
-  padding:22px 28px;
+  padding: 22px 28px;
   height: clamp(560px, 70vh, 880px);
-  overflow:auto;
+  overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color:#2a2b2e transparent;
+  scrollbar-color: #2a2b2e transparent;
+  backdrop-filter: blur(4px); 
 }
 .chat-board::-webkit-scrollbar{ width:10px; }
 .chat-board::-webkit-scrollbar-thumb{ background:#2a2b2e; border-radius:10px; }
@@ -167,4 +189,150 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
 #lucai-app .send-btn{
   position:absolute; right:24px; bottom:18px;
   height:44px; min-width:var(--send-w); z-index:1;
+}
+
+/* ====== Home: fondo hex zoomed-out tipo “wireframe” ====== */
+/* super zoomed-out hex */
+.hex-zoomed {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    url("/brand/hexagon.png") center/4200px no-repeat,
+    var(--lu-bg);
+  opacity: 0.12; 
+  filter: saturate(160%) brightness(0.9);
+}
+
+.hex-zoomed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 30%, rgba(0, 255, 0, 0.08), transparent 70%);
+  mix-blend-mode: screen;
+}
+
+/* ====== Header nav ====== */
+.nav-link{
+  color: var(--lu-subtle);
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: color .2s ease, opacity .2s ease;
+}
+.nav-link:hover{ color: var(--lu-text); }
+
+/* ====== Hero ====== */
+.hero-grid{
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: clamp(24px, 4vw, 48px);
+  align-items: center;
+}
+@media (max-width: 1024px){
+  .hero-grid{ grid-template-columns: 1fr; }
+}
+.hero-title{
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  font-size: clamp(36px, 6vw, 64px);
+}
+.hero-sub{
+  color: var(--lu-subtle);
+  font-size: clamp(16px, 2.4vw, 18px);
+  max-width: 60ch;
+}
+
+/* versión “full gradiente” ya mencionada en tus notas */
+#lucai-app .btn-cta-block{
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  height: 44px; padding: 0 20px;
+  border-radius: 12px;
+  background: var(--lu-cta-grad);
+  color: #111; font-weight: 700; cursor: pointer;
+  transition: transform .06s ease, filter .2s ease;
+}
+#lucai-app .btn-cta-block:hover{ filter: brightness(1.02); }
+#lucai-app .btn-cta-block:active{ transform: translateY(1px); }
+
+/* esfera grande (lado derecho del hero) */
+.brand-sphere-large{
+  filter: drop-shadow(0 24px 80px rgba(255,105,0,.25));
+  transform: translateY(6px);
+}
+
+/* badges finos */
+.badge-dot{
+  position: relative;
+  padding-left: 14px;
+}
+.badge-dot::before{
+  content: "";
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 6px; height: 6px; border-radius: 999px;
+  background: var(--lu-accent);
+}
+
+/* ====== placeholder ====== */
+.section-soft{
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--lu-border);
+  padding: 56px 20px;
+}
+.section-title{
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 700; margin-bottom: 8px;
+}
+.section-p{
+  color: var(--lu-subtle);
+  max-width: 70ch;
+}
+
+/* Layout raíz en columna: empuja el footer al final */
+.page-root{
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.content-wrap{
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto; 
+}
+
+/* Footer estilo section, todo abajo */
+.footer-soft {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--lu-border);
+  padding: 56px 20px;
+  width: 100%;     
+}
+
+/* Reutilizamos .nav-link para botones de texto (Logout) */
+.nav-link{
+  color: var(--lu-subtle);
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: color .2s ease, opacity .2s ease;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.nav-link:hover{ color: var(--lu-text); }
+
+/* Opcional: reduce min-width de btn-outline para CTA del header */
+:root { --send-w: 110px; }
+
+/* Headings con Sora */
+h1, h2, .hero-title {
+  font-family: var(--font-sora), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
 }

@@ -1,11 +1,9 @@
+// src/app/layout.tsx
 import "./globals.css";
-import { Roboto } from "next/font/google";
+import { Roboto, Sora } from "next/font/google";
 
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
+const roboto = Roboto({ subsets: ["latin"], weight: ["400","500","700"], display: "swap" });
+const sora   = Sora({   subsets: ["latin"], weight: ["400","600","700","800"], display: "swap", variable: "--font-sora" });
 
 export const metadata = {
   title: "LUCAI — Chat",
@@ -18,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es-AR">
       <body
         id="lucai-app"
-        className={roboto.className}
+        className={`${roboto.className} ${sora.variable}`}
         style={{ background: "#0b0b0b", color: "var(--lu-text)" }}
       >
         {children}

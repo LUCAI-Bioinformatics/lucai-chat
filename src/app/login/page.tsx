@@ -13,8 +13,10 @@ export default function LoginPage() {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email || !pass) return;
+    // fake auth token en localStorage
     localStorage.setItem("lu_isAuthed", "1");
-    r.push("/chat");
+    // redirección a la Homepage
+    r.push("/");
   };
 
   return (
@@ -28,7 +30,11 @@ export default function LoginPage() {
 
         <h2 className="kicker">Ready to unlock your true potential?</h2>
 
-        <form onSubmit={onSubmit} className="mx-auto max-w-3xl grid gap-6">
+        <form
+          onSubmit={onSubmit}
+          className="mx-auto max-w-3xl grid gap-6"
+          style={{ "--send-w": "96px" } as React.CSSProperties}
+        >
           <input
             className="pill-input"
             placeholder="Email"
@@ -51,9 +57,9 @@ export default function LoginPage() {
             />
             <button
               type="button"
-              onClick={() => setShow(s => !s)}
+              onClick={() => setShow((s) => !s)}
               aria-label={show ? "Hide password" : "Show password"}
-              className="eye-btn"
+              className="eye-btn eye-ghost"
             >
               {show ? (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
