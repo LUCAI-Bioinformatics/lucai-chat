@@ -166,3 +166,107 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
   position:absolute; right:24px; bottom:18px;
   height:44px; min-width:var(--send-w); z-index:1;
 }
+
+/* ====== Home: fondo hex zoomed-out tipo “wireframe” ====== */
+/* super zoomed-out hex */
+.hex-zoomed {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    url("/brand/hexagon.png") center/4200px no-repeat,
+    var(--lu-bg);
+  opacity: 0.12; 
+  filter: saturate(160%) brightness(0.9);
+}
+
+.hex-zoomed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 30%, rgba(0, 255, 0, 0.08), transparent 70%);
+  mix-blend-mode: screen;
+}
+
+/* ====== Header nav ====== */
+.nav-link{
+  color: var(--lu-subtle);
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: color .2s ease, opacity .2s ease;
+}
+.nav-link:hover{ color: var(--lu-text); }
+
+/* ====== Hero ====== */
+.hero-grid{
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: clamp(24px, 4vw, 48px);
+  align-items: center;
+}
+@media (max-width: 1024px){
+  .hero-grid{ grid-template-columns: 1fr; }
+}
+.hero-title{
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  font-size: clamp(36px, 6vw, 64px);
+}
+.hero-sub{
+  color: var(--lu-subtle);
+  font-size: clamp(16px, 2.4vw, 18px);
+  max-width: 60ch;
+}
+
+/* versión “full gradiente” ya mencionada en tus notas */
+#lucai-app .btn-cta-block{
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  height: 44px; padding: 0 20px;
+  border-radius: 12px;
+  background: var(--lu-cta-grad);
+  color: #111; font-weight: 700; cursor: pointer;
+  transition: transform .06s ease, filter .2s ease;
+}
+#lucai-app .btn-cta-block:hover{ filter: brightness(1.02); }
+#lucai-app .btn-cta-block:active{ transform: translateY(1px); }
+
+/* esfera grande (lado derecho del hero) */
+.brand-sphere-large{
+  filter: drop-shadow(0 24px 80px rgba(255,105,0,.25));
+  transform: translateY(6px);
+}
+
+/* badges finos */
+.badge-dot{
+  position: relative;
+  padding-left: 14px;
+}
+.badge-dot::before{
+  content: "";
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 6px; height: 6px; border-radius: 999px;
+  background: var(--lu-accent);
+}
+
+/* ====== placeholder ====== */
+.section-soft{
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--lu-border);
+  padding: 56px 20px;
+}
+.section-title{
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 700; margin-bottom: 8px;
+}
+.section-p{
+  color: var(--lu-subtle);
+  max-width: 70ch;
+}

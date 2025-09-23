@@ -13,8 +13,10 @@ export default function LoginPage() {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email || !pass) return;
+    // fake auth token en localStorage
     localStorage.setItem("lu_isAuthed", "1");
-    r.push("/chat");
+    // redirección a la Homepage
+    r.push("/");
   };
 
   return (
