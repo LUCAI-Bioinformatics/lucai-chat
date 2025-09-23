@@ -77,9 +77,11 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
 
 /* ============== Botones (override vendor) ============== */
 
-/* 1) “Outline” (Se usa en Send y en Enter para que sean iguales) */
+/* ============== Botones (override vendor) ============== */
+
+/* Outline común (Send / Enter) */
 #lucai-app button.btn-outline[type="submit"]{
-  all: unset;                            /* mata estilos del vendor SOLO en nuestros botones */
+  all: unset;
   box-sizing: border-box;
   display:inline-flex; align-items:center; justify-content:center;
   height:44px; min-width:var(--send-w); padding:0 24px;
@@ -92,34 +94,30 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
   background:var(--lu-accent); color:#111;
 }
 #lucai-app button.btn-outline[type="submit"]:active{ transform:translateY(1px); }
-#lucai-app button.btn-outline[type="submit"]:focus-visible{
-  outline:0; box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 35%, transparent);
-}
+#lucai-app button.btn-outline[type="submit"]::selection{ background:transparent; }
 
-/* 2) CTA lleno (si lo necesitás en otras vistas) */
-#lucai-app .btn-cta-block{
-  all: unset;
-  box-sizing: border-box;
-  display:block; width:100%; height:48px; border-radius:9999px;
-  border:2px solid var(--lu-accent); background:var(--lu-cta-grad);
-  color:#111; font-weight:600; text-align:center;
-  box-shadow:0 10px 30px rgba(255,105,0,.25);
-  transition: transform .06s ease, filter .2s ease;
-}
-#lucai-app .btn-cta-block:hover{ filter:brightness(1.05); }
-#lucai-app .btn-cta-block:active{ transform:translateY(1px); }
+/* Enter a la derecha (el ancho lo pone --send-w) */
+#lucai-app .btn-enter{ margin-left:auto; }
 
-/* 3) Botón del “ojo” dentro del input (naranja) */
+/* Ojo por defecto (con marco) */
 #lucai-app .eye-btn{
   all: unset;
   box-sizing: border-box;
   position:absolute; right:6px; top:50%; transform:translateY(-50%);
   width:36px; height:36px; display:grid; place-items:center;
-  border-radius:8px; border:2px solid var(--lu-accent);
-  color:var(--lu-accent); background:transparent; cursor:pointer;
-  transition: background-color .2s ease, color .2s ease, transform .06s ease;
+  cursor:pointer; color:var(--lu-accent);
+  transition: filter .2s ease, transform .06s ease;
 }
-#lucai-app .eye-btn:hover{ background:var(--lu-accent); color:#111; }
+#lucai-app .eye-btn:focus-visible{
+  outline:0; box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 35%, transparent);
+  border-radius:10px;
+}
+#lucai-app .eye-btn:hover{ filter: brightness(1.15); }
+
+
+#lucai-app .eye-btn.eye-ghost{
+}
+
 #lucai-app .eye-btn:active{ transform:translateY(-50%) scale(.98); }
 #lucai-app .eye-btn:focus-visible{
   outline:0; box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 35%, transparent);
