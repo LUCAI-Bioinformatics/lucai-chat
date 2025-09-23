@@ -1,7 +1,5 @@
 @import "tailwindcss";
-/* Metemos el vendor en una capa para que sea más fácil sobreescribir */
 @import url("/vendor/lucai.scoped.css") layer(vendor);
-
 /* ============== TOKENS (LUCAI dark) ============== */
 :root{
   --lu-bg:        #0b0b0b;
@@ -159,15 +157,16 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
 #lucai-app .send-text[disabled]{ opacity:.5; cursor:not-allowed; }
 
 /* ============== Chat ============== */
-.chat-board{
-  background: color-mix(in oklab, var(--lu-bg) 90%, #1b1e20);
-  border: 1px solid color-mix(in oklab, var(--lu-bg) 70%, #2a2e31);
+.chat-board {
+  background: color-mix(in oklab, var(--lu-bg) 75%, #1b1e20 25%);
+  border: 1px solid color-mix(in oklab, var(--lu-bg) 65%, #2a2e31);
   border-radius: var(--lu-radius);
-  padding:22px 28px;
+  padding: 22px 28px;
   height: clamp(560px, 70vh, 880px);
-  overflow:auto;
+  overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color:#2a2b2e transparent;
+  scrollbar-color: #2a2b2e transparent;
+  backdrop-filter: blur(4px); 
 }
 .chat-board::-webkit-scrollbar{ width:10px; }
 .chat-board::-webkit-scrollbar-thumb{ background:#2a2b2e; border-radius:10px; }
