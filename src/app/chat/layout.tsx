@@ -1,6 +1,8 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ProtectedLayout from "@/components/ProtectedLayout";
+
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
   const r = useRouter();
@@ -10,5 +12,5 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
     }
   }, [r]);
 
-  return <>{children}</>;
+  return <ProtectedLayout>{children}</ProtectedLayout>;
 }

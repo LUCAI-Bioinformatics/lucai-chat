@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
+
 
 type Msg = { role: "user" | "bot"; text: string };
 
@@ -11,6 +13,7 @@ export default function ChatPage() {
   const [msgs, setMsgs] = useState<Msg[]>([
     { role: "bot", text: "Hi! How may i assist you?" },
   ]);
+  const { data: session } = useSession();
 
   // autosize textarea + altura del dock
   const taRef = useRef<HTMLTextAreaElement | null>(null);
@@ -125,7 +128,7 @@ export default function ChatPage() {
               }
             }}
             rows={1}
-            placeholder="Write your message..."
+            placeholder={session?.user?.name?.toString()}
             className="pill-textarea dock-textarea resize-none w-full"
             autoFocus
           />
