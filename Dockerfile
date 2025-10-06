@@ -32,4 +32,5 @@ COPY --from=builder /app/public ./public
 EXPOSE 3000
 
 # Comando para correr la app
+ENV HOSTNAME=0.0.0.0
 CMD ["node", "server.js"]
