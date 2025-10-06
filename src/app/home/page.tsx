@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+
 
 export default function HomePage() {
   const r = useRouter();
@@ -63,7 +65,7 @@ export default function HomePage() {
             </a>
 
             {/* Log out (texto) */}
-            <button onClick={handleLogout} className="nav-link">
+            <button onClick={() => signOut({ callbackUrl: "https://genphenia.lare.com.ar/" })} className="nav-link">
               Log out
             </button>
           </nav>
