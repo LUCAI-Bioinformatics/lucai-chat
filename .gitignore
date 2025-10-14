@@ -24,6 +24,8 @@
 # production
 /build
 /apps/backend/dist
+/apps/backend/data
+/apps/sql_assistant/__pycache__
 
 # misc
 .DS_Store

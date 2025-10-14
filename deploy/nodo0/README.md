@@ -4,7 +4,8 @@ Guía rápida para levantar el frontend Next.js y el backend Express dentro del 
 
 ## Estructura
 - `apps/frontend`: aplicación Next.js en modo `standalone`.
-- `apps/backend`: API Express Typescript.
+- `apps/backend`: API Express Typescript (usuarios + proxy al motor NL→SQL).
+- `apps/sql_assistant`: servicio FastAPI que envuelve `ask.py`.
 - `deploy/nodo0/docker-compose.yml`: stack listo para Traefik sobre la red externa `web`.
 
 ## Prerrequisitos
@@ -25,6 +26,9 @@ Guía rápida para levantar el frontend Next.js y el backend Express dentro del 
    BACKEND_HOST=api.lucai.infra.cluster.qb.fcen.uba.ar
    NEXT_PUBLIC_API_BASE_URL=https://api.lucai.infra.cluster.qb.fcen.uba.ar
    CORS_ALLOW_ORIGINS=https://lucai.infra.cluster.qb.fcen.uba.ar
+   LLM_BASE_URL=http://nodo4:9000/v1
+   LLM_MODEL=local
+   LLM_API_KEY=none
    ```
    - `FRONTEND_HOST` es el dominio público que apuntará al frontend.
    - `BACKEND_HOST` es el dominio público del API (si no se desea exponerlo, quitar los labels de Traefik en el servicio `backend`).
@@ -42,10 +46,11 @@ Guía rápida para levantar el frontend Next.js y el backend Express dentro del 
    docker compose logs --tail=50 -f
    ```
 6. Una vez verificado, acceder a `https://<FRONTEND_HOST>` para validar el sitio.
+7. El servicio `ask-service` queda accesible solo dentro de la red interna de Docker (`internal`). El backend lo resuelve como `http://ask-service:9000`.
 
 ## Recursos y persistencia
-- Ambos contenedores tienen límites de CPU/RAM para no interferir con otras apps alojadas en el nodo0. Ajustar si es necesario.
-- La API aún no persiste datos. Si en el futuro se suman bases de datos o almacenamiento persistente, montar volúmenes bajo `/data/lucai-chat` siguiendo las políticas del cluster.
+- Los contenedores tienen límites de CPU/RAM para no interferir con otras apps alojadas en el nodo0. Ajustar si es necesario.
+- El volumen `lucai_data` monta `/data/lucai-chat` dentro de cada servicio para almacenar `lucai.db`, que contiene la tabla de usuarios consultable tanto por el backend como por el motor NL→SQL.
 
 ## Actualizaciones
 1. Obtener los últimos cambios (`git pull`).

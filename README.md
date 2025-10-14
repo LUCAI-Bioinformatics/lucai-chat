@@ -1,10 +1,11 @@
 # LUCAI Chat Platform
 
-Monorepo con el frontend orientado a Next.js y un backend Express listo para integrarse en la infraestructura del cluster (Traefik en nodo0).
+Monorepo con frontend Next.js, backend Express/SQLite y un microservicio Python (FastAPI) que encapsula el flujo `ask.py` (NL → SQL). Todo queda listo para desplegarse en el nodo0 detrás de Traefik.
 
 ## Estructura
 - `apps/frontend`: aplicación Next.js 15 (`output: standalone`) más assets y estilos.
-- `apps/backend`: API Express + Typescript con endpoints de health/status.
+- `apps/backend`: API Express + Typescript (usuarios/SQLite, health/status y proxy al ask-service).
+- `apps/sql_assistant`: FastAPI + `ask.py`, expone `/ask` para convertir una pregunta en respuesta/sentencia SQL.
 - `deploy/nodo0`: archivos de despliegue (docker-compose y `.env.example`) pensados para el nodo0.
 
 ## Requisitos
@@ -16,13 +17,21 @@ Instalar dependencias por módulo:
 ```bash
 npm install --prefix apps/frontend
 npm install --prefix apps/backend
+python -m venv .venv && source .venv/bin/activate  # opcional, recomendado
+pip install -r apps/sql_assistant/requirements.txt
 ```
 
 ## Desarrollo local
 - Frontend: `npm run dev --prefix apps/frontend` (http://localhost:3000)
-- Backend: `npm run dev --prefix apps/backend` (http://localhost:4000 por defecto)
+- Backend: `npm run dev --prefix apps/backend` (http://localhost:8080 por defecto)
+- Ask service: `uvicorn server:app --reload --port 9000` dentro de `apps/sql_assistant`
 
-El backend expone `/healthz` y `/api/status`. Ajustá `CORS_ALLOW_ORIGINS` si necesitás permitir otros orígenes.
+El backend expone `/healthz`, `/api/status`, `/api/users` y `/api/chat` (proxy al ask-service). Ajustá `CORS_ALLOW_ORIGINS` si necesitás permitir otros orígenes.
+
+Variables de entorno sugeridas para desarrollo local:
+- Backend: `ASK_SERVICE_URL=http://localhost:9000`, `DB_PATH=./data/lucai.db`.
+- Frontend: `NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api`.
+- Ask service: `DB_URL=sqlite:///file:./data/lucai.db?mode=ro&uri=true`, además de `LLM_BASE_URL/LLM_MODEL/LLM_API_KEY`.
 
 ## Build de producción
 ```bash
@@ -31,11 +40,14 @@ npm run build --prefix apps/backend
 ```
 Los artefactos quedan en `apps/frontend/.next` y `apps/backend/dist`.
 
+La base SQLite (`lucai.db`) se genera automáticamente bajo `apps/backend/data` (ignorada en git) y se comparte con el ask-service para las consultas NL→SQL.
+
 ## Docker
 Cada app tiene su `Dockerfile` y `.dockerignore`. Para construir localmente:
 ```bash
 docker build -t lucai-frontend ./apps/frontend
 docker build -t lucai-backend ./apps/backend
+docker build -t lucai-ask ./apps/sql_assistant
 ```
 
 Para desplegar en el nodo0 y registrar rutas en Traefik, seguí `deploy/nodo0/README.md`:

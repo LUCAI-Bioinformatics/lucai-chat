@@ -1,22 +1,19 @@
 import cors from 'cors';
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
-const app = express();
-const port = Number(process.env.PORT ?? 4000);
-const apiPrefix = process.env.API_PREFIX ?? '/api';
+import { API_PREFIX, CORS_ALLOW_ORIGINS, PORT } from './config.js';
+import chatRouter from './routes/chat.js';
+import usersRouter from './routes/users.js';
 
-const allowList = (process.env.CORS_ALLOW_ORIGINS ?? '')
-  .split(',')
-  .map(origin => origin.trim())
-  .filter(Boolean);
+const app = express();
 
 app.use(helmet());
 app.use(
   cors({
-    origin: allowList.length > 0 ? allowList : undefined,
-    credentials: true
-  })
+    origin: CORS_ALLOW_ORIGINS.length > 0 ? CORS_ALLOW_ORIGINS : true,
+    credentials: true,
+  }),
 );
 app.use(express.json());
 
@@ -24,10 +21,23 @@ app.get('/healthz', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
-app.get(`${apiPrefix}/status`, (_req: Request, res: Response) => {
+app.get(`${API_PREFIX}/status`, (_req: Request, res: Response) => {
   res.json({ uptime: process.uptime(), timestamp: Date.now() });
 });
 
-app.listen(port, () => {
-  console.log(`Backend API listening on port ${port}`);
+app.use(`${API_PREFIX}/users`, usersRouter);
+app.use(`${API_PREFIX}/chat`, chatRouter);
+
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: 'not-found' });
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  console.error('[backend] unexpected error', err);
+  res.status(500).json({ error: 'internal-error' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Backend API listening on port ${PORT}`);
 });

@@ -3,6 +3,8 @@ version: "3.9"
 networks:
   web:
     external: true
+  internal:
+    internal: true
 
 services:
   backend:
@@ -16,6 +18,8 @@ services:
       - PORT=${BACKEND_PORT:-8080}
       - API_PREFIX=${API_PREFIX:-/api}
       - CORS_ALLOW_ORIGINS=${CORS_ALLOW_ORIGINS}
+      - ASK_SERVICE_URL=http://ask-service:9000
+      - DB_PATH=/data/lucai-chat/lucai.db
     expose:
       - "${BACKEND_PORT:-8080}"
     restart: always
@@ -34,6 +38,11 @@ services:
           memory: 512M
     networks:
       - web
+      - internal
+    volumes:
+      - lucai_data:/data
+    depends_on:
+      - ask-service
 
   frontend:
     build:
@@ -65,3 +74,27 @@ services:
           memory: 1G
     networks:
       - web
+
+  ask-service:
+    build:
+      context: ../../apps/sql_assistant
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DB_URL=${ASK_DB_URL:-sqlite:///file:/data/lucai-chat/lucai.db?mode=ro&uri=true}
+      - LLM_BASE_URL=${LLM_BASE_URL}
+      - LLM_API_KEY=${LLM_API_KEY:-none}
+      - LLM_MODEL=${LLM_MODEL:-local}
+    expose:
+      - "9000"
+    restart: always
+    labels:
+      - "traefik.enable=false"
+    volumes:
+      - lucai_data:/data
+    networks:
+      - internal
+
+volumes:
+  lucai_data:

@@ -37,10 +37,24 @@ export default function ChatPage() {
     setMsgs((m) => [...m, { role: "user", text: q }]);
     setInput("");
     try {
-      const res = await fetch("/api/chat", { method: "POST", body: q });
-      const text = await res.text();
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: q }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setMsgs((m) => [
+          ...m,
+          { role: "bot", text: `Error: ${err?.error ?? "No disponible"}` },
+        ]);
+        return;
+      }
+      const data = await res.json();
+      const text = typeof data?.answer === "string" ? data.answer : "Sin respuesta.";
       setMsgs((m) => [...m, { role: "bot", text }]);
-    } catch {
+    } catch (error) {
+      console.error("[chat] fetch error", error);
       setMsgs((m) => [...m, { role: "bot", text: "Error de red." }]);
     }
   };

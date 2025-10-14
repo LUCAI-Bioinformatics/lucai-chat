@@ -3,7 +3,10 @@
 FROM node:20-slim AS base
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 build-essential pkg-config \
+  && rm -rf /var/lib/apt/lists/* \
+  && npm ci
 
 FROM base AS build
 COPY tsconfig.json ./
