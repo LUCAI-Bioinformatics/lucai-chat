@@ -1,37 +1,23 @@
 {
-  "name": "lucai-chat",
+  "name": "lucai-platform",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build:lucai-css": "postcss styles/vendor/lucai/index.css -o public/vendor/lucai.scoped.css --config postcss.lucai.cjs",
-    "predev": "npm run build:lucai-css",
-    "prebuild": "npm run build:lucai-css",
-    "dev": "cross-env NEXT_DISABLE_TURBOPACK=1 next dev",
-    "build": "cross-env NEXT_DISABLE_TURBOPACK=1 next build",
-    "start": "next start",
-    "lint": "eslint"
+    "install": "npm run install:frontend && npm run install:backend",
+    "install:frontend": "npm install --prefix apps/frontend",
+    "install:backend": "npm install --prefix apps/backend",
+    "dev": "npm run dev:frontend",
+    "dev:frontend": "npm run dev --prefix apps/frontend",
+    "dev:backend": "npm run dev --prefix apps/backend",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "npm run build --prefix apps/frontend",
+    "build:backend": "npm run build --prefix apps/backend",
+    "start": "npm run start:frontend",
+    "start:frontend": "npm run start --prefix apps/frontend",
+    "start:backend": "npm run start --prefix apps/backend",
+    "lint": "npm run lint --prefix apps/frontend && npm run lint --prefix apps/backend"
   },
-  "dependencies": {
-    "next": "15.5.3",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "autoprefixer": "^10.4.21",
-    "cross-env": "^10.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.3",
-    "lightningcss": "^1.30.1",
-    "postcss": "^8.5.6",
-    "postcss-cli": "^11.0.1",
-    "postcss-import": "^16.1.1",
-    "postcss-prefix-selector": "^2.1.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
