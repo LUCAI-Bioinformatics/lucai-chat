@@ -26,6 +26,12 @@ services:
       - "traefik.http.routers.lucai-frontend.entrypoints=websecure"
       - "traefik.http.routers.lucai-frontend.tls=true"
       - "traefik.http.routers.lucai-frontend.tls.certresolver=leresolver"
+      # HTTP → HTTPS redirect
+      - "traefik.http.routers.lucai-frontend-http.rule=Host(`${FRONTEND_HOST}`)"
+      - "traefik.http.routers.lucai-frontend-http.entrypoints=web"
+      - "traefik.http.routers.lucai-frontend-http.middlewares=lucai-frontend-https-redirect"
+      - "traefik.http.middlewares.lucai-frontend-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.lucai-frontend-https-redirect.redirectscheme.permanent=true"
     deploy:
       resources:
         limits:
@@ -33,4 +39,3 @@ services:
           memory: 1G
     networks:
       - web
-
