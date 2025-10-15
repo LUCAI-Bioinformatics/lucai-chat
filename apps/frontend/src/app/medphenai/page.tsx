@@ -7,11 +7,17 @@ import { useRouter } from "next/navigation";
 
 type TabId = "overview" | "integrantes";
 
+type Symptom = {
+  id: string;
+  label: string;
+  codigo?: string;
+};
+
 type Member = {
   id: string;
   nombre: string;
   historiaClinica: string;
-  sintomas: string[];
+  sintomas: Symptom[];
   diagnostico: string;
 };
 
@@ -22,12 +28,39 @@ const tabs: Array<{ id: TabId; label: string }> = [
 
 const quickLinks = [{ label: "Nuevo Diagnóstico +", href: "/medphenai/nuevo" }];
 
+const createSymptomId = () => {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `sym-${Math.random().toString(16).slice(2)}-${Date.now()}`;
+};
+
+const baseSymptoms: Record<string, Symptom[]> = {
+  marcelo: [
+    { id: "sym-mar-1", label: "Dolor torácico leve", codigo: "HP:0001681" },
+    { id: "sym-mar-2", label: "Cansancio", codigo: "HP:0012378" },
+    { id: "sym-mar-3", label: "Antecedente familiar", codigo: "HP:0001433" },
+  ],
+  franco: [
+    { id: "sym-fra-1", label: "Molestias hepáticas", codigo: "HP:0001399" },
+    { id: "sym-fra-2", label: "Sueño irregular", codigo: "HP:0002360" },
+  ],
+  mate: [
+    { id: "sym-mat-1", label: "Migrañas tensionales", codigo: "HP:0002077" },
+    { id: "sym-mat-2", label: "Déficit de concentración", codigo: "HP:0001343" },
+  ],
+};
+
+const initialSymptomDrafts: Record<string, Symptom[]> = Object.fromEntries(
+  Object.entries(baseSymptoms).map(([key, list]) => [key, list.map((symptom) => ({ ...symptom }))])
+);
+
 const integrantes: Member[] = [
   {
     id: "marcelo",
     nombre: "Marcelo Martí",
     historiaClinica: "HC_Cardiometabolica_MMarcí.pdf",
-    sintomas: ["Dolor torácico leve", "Cansancio", "Antecedente familiar"],
+    sintomas: baseSymptoms.marcelo,
     diagnostico:
       "Probable síndrome metabólico en observación. Recomendar seguimiento quincenal y control glucémico.",
   },
@@ -35,7 +68,7 @@ const integrantes: Member[] = [
     id: "franco",
     nombre: "Franco Brunello",
     historiaClinica: "HC_Hepatica_FBrunello.pdf",
-    sintomas: ["Molestias hepáticas", "Sueño irregular"],
+    sintomas: baseSymptoms.franco,
     diagnostico:
       "Indicadores iniciales de esteatosis hepática. Sugerido plan de nutrición ampliado + perfil lipidémico.",
   },
@@ -43,7 +76,7 @@ const integrantes: Member[] = [
     id: "mate",
     nombre: "Mate Alvarez",
     historiaClinica: "HC_Neuro_MAlvarez.pdf",
-    sintomas: ["Migrañas tensionales", "Déficit de concentración"],
+    sintomas: baseSymptoms.mate,
     diagnostico:
       "Compatibilidad con migraña con aura. Revisar historial farmacológico y ajustar plan preventivo mensual.",
   },
@@ -52,12 +85,85 @@ const integrantes: Member[] = [
 export default function MedPhenAIPage() {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [selectedMember, setSelectedMember] = useState<Member>(integrantes[0]);
+  const [symptomDrafts, setSymptomDrafts] = useState<Record<string, Symptom[]>>(initialSymptomDrafts);
+  const [newSymptom, setNewSymptom] = useState<Record<string, { label: string; code: string }>>(() =>
+    Object.fromEntries(
+      Object.keys(initialSymptomDrafts).map((key) => [
+        key,
+        { label: "", code: "" },
+      ])
+    )
+  );
   const router = useRouter();
 
   const activeMember = useMemo(() => {
     if (activeTab !== "integrantes") return null;
-    return selectedMember;
-  }, [activeTab, selectedMember]);
+    return {
+      ...selectedMember,
+      sintomas: symptomDrafts[selectedMember.id] ?? [],
+    };
+  }, [activeTab, selectedMember, symptomDrafts]);
+
+  const handleSelectMember = (member: Member) => {
+    setSelectedMember(member);
+  };
+
+  const handleDraftChange = (memberId: string, field: "label" | "code", value: string) => {
+    setNewSymptom((prev) => ({
+      ...prev,
+      [memberId]: {
+        ...prev[memberId],
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleAddSymptom = (memberId: string) => {
+    const draft = newSymptom[memberId];
+    if (!draft?.label.trim() || !draft.code.trim()) return;
+
+    setSymptomDrafts((prev) => {
+      const nextList = [...(prev[memberId] ?? [])];
+      nextList.push({
+        id: createSymptomId(),
+        label: draft.label.trim(),
+        codigo: draft.code.trim().toUpperCase(),
+      });
+      return { ...prev, [memberId]: nextList };
+    });
+
+    setNewSymptom((prev) => ({
+      ...prev,
+      [memberId]: { label: "", code: "" },
+    }));
+  };
+
+  const handleRemoveSymptom = (memberId: string, symptomId: string) => {
+    setSymptomDrafts((prev) => ({
+      ...prev,
+      [memberId]: (prev[memberId] ?? []).filter((symptom) => symptom.id !== symptomId),
+    }));
+  };
+
+  const jumpToSymptomStep = () => {
+    if (!activeMember) {
+      router.push("/medphenai/nuevo");
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      const payload = {
+        nombre: activeMember.nombre,
+        sintomas: (symptomDrafts[activeMember.id] ?? []).map((symptom) => ({
+          description: symptom.label,
+          code: symptom.codigo ?? "",
+        })),
+      };
+      window.sessionStorage.setItem("medphenai:newDiagDraft", JSON.stringify(payload));
+    }
+
+    router.push("/medphenai/nuevo?step=3");
+  };
 
   return (
     <main className="page-root relative">
@@ -121,11 +227,6 @@ export default function MedPhenAIPage() {
                     ].join(" ")}
                   >
                     {tab.label}
-                    {tab.hint && (
-                      <span className="ml-2 rounded-full border border-[var(--lu-border)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-[var(--lu-subtle)]">
-                        {tab.hint}
-                      </span>
-                    )}
                     {isActive && (
                       <span
                         className="absolute -bottom-[13px] left-1/2 h-[3px] w-12 -translate-x-1/2 rounded-full bg-[var(--lu-accent)]"
@@ -247,7 +348,7 @@ export default function MedPhenAIPage() {
                           <button
                             key={member.id}
                             type="button"
-                            onClick={() => setSelectedMember(member)}
+                            onClick={() => handleSelectMember(member)}
                             className={[
                               "flex items-center justify-between rounded-3xl border px-4 py-3 text-left transition-all duration-150",
                               isSelected
@@ -313,16 +414,57 @@ export default function MedPhenAIPage() {
 
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.28em] text-[var(--lu-subtle)]">Síntomas reportados</p>
-                        <ul className="flex flex-wrap gap-2">
-                          {activeMember.sintomas.map((symptom) => (
-                            <li
-                              key={symptom}
-                              className="rounded-full border border-[var(--lu-border)] bg-[rgba(21,21,21,0.9)] px-3 py-1 text-xs text-[var(--lu-text)]"
+                        <div className="space-y-3">
+                          <ul className="flex flex-wrap gap-2">
+                            {activeMember.sintomas.map((symptom) => (
+                              <li
+                                key={symptom.id}
+                                className="flex items-center gap-2 rounded-full border border-[var(--lu-border)] bg-[rgba(21,21,21,0.9)] px-3 py-1 text-xs text-[var(--lu-text)]"
+                              >
+                                <span className="font-semibold text-white">{symptom.label}</span>
+                                {symptom.codigo && (
+                                  <span className="text-[10px] text-[var(--lu-subtle)]">{symptom.codigo}</span>
+                                )}
+                                <button
+                                  type="button"
+                                  className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-[var(--lu-border)] text-[10px] text-[var(--lu-subtle)] hover:text-white"
+                                  onClick={() => handleRemoveSymptom(activeMember.id, symptom.id)}
+                                  aria-label={`Eliminar ${symptom.label}`}
+                                >
+                                  ×
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+
+                          <div className="grid gap-3 md:grid-cols-[2fr_1fr_auto]">
+                            <input
+                              type="text"
+                              placeholder="Descripción"
+                              value={newSymptom[activeMember.id]?.label ?? ""}
+                              onChange={(event) => handleDraftChange(activeMember.id, "label", event.target.value)}
+                              className="rounded-xl border border-[var(--lu-border)] bg-[rgba(24,24,24,0.9)] px-4 py-2 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none"
+                            />
+                            <input
+                              type="text"
+                              placeholder="Código HPO"
+                              value={newSymptom[activeMember.id]?.code ?? ""}
+                              onChange={(event) => handleDraftChange(activeMember.id, "code", event.target.value)}
+                              className="rounded-xl border border-[var(--lu-border)] bg-[rgba(24,24,24,0.9)] px-4 py-2 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none"
+                            />
+                            <button
+                              type="button"
+                              className="btn-outline h-10 px-4 rounded-md disabled:opacity-50"
+                              onClick={() => handleAddSymptom(activeMember.id)}
+                              disabled={
+                                !newSymptom[activeMember.id]?.label.trim() ||
+                                !newSymptom[activeMember.id]?.code.trim()
+                              }
                             >
-                              {symptom}
-                            </li>
-                          ))}
-                        </ul>
+                              Agregar síntoma
+                            </button>
+                          </div>
+                        </div>
                       </div>
 
                       <div>
@@ -330,6 +472,11 @@ export default function MedPhenAIPage() {
                         <p className="rounded-2xl border border-[color-mix(in_oklab,var(--lu-border)_90%,#2b2b2b)] bg-[rgba(21,21,21,0.92)] p-4 text-sm leading-relaxed text-[var(--lu-text)]">
                           {activeMember.diagnostico}
                         </p>
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          <button type="button" className="btn-outline h-10 px-4 rounded-md" onClick={jumpToSymptomStep}>
+                            Regenerar diagnóstico
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

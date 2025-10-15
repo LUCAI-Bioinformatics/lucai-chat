@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type Step = 1 | 2 | 3 | 4;
@@ -16,7 +16,7 @@ const stepsMeta: Array<{ id: Step; title: string }> = [
   { id: 1, title: "Datos básicos" },
   { id: 2, title: "Historia clínica" },
   { id: 3, title: "Síntomas" },
-  { id: 4, title: "Diagnóstico" },
+  { id: 4, title: "Diagnóstico Final" },
 ];
 
 const defaultSymptoms: Symptom[] = [
@@ -25,8 +25,206 @@ const defaultSymptoms: Symptom[] = [
   { description: "Cambios en peso", code: "HP:0004324" },
 ];
 
+const countries = [
+  "Afganistán",
+  "Albania",
+  "Alemania",
+  "Andorra",
+  "Angola",
+  "Antigua y Barbuda",
+  "Arabia Saudita",
+  "Argelia",
+  "Argentina",
+  "Armenia",
+  "Australia",
+  "Austria",
+  "Azerbaiyán",
+  "Bahamas",
+  "Bangladés",
+  "Barbados",
+  "Baréin",
+  "Bélgica",
+  "Belice",
+  "Benín",
+  "Bielorrusia",
+  "Birmania",
+  "Bolivia",
+  "Bosnia y Herzegovina",
+  "Botsuana",
+  "Brasil",
+  "Brunéi",
+  "Bulgaria",
+  "Burkina Faso",
+  "Burundi",
+  "Bután",
+  "Cabo Verde",
+  "Camboya",
+  "Camerún",
+  "Canadá",
+  "Catar",
+  "Chad",
+  "Chile",
+  "China",
+  "Chipre",
+  "Colombia",
+  "Comoras",
+  "Corea del Norte",
+  "Corea del Sur",
+  "Costa de Marfil",
+  "Costa Rica",
+  "Croacia",
+  "Cuba",
+  "Dinamarca",
+  "Dominica",
+  "Ecuador",
+  "Egipto",
+  "El Salvador",
+  "Emiratos Árabes Unidos",
+  "Eritrea",
+  "Eslovaquia",
+  "Eslovenia",
+  "España",
+  "Estados Unidos",
+  "Estonia",
+  "Etiopía",
+  "Filipinas",
+  "Finlandia",
+  "Fiyi",
+  "Francia",
+  "Gabón",
+  "Gambia",
+  "Georgia",
+  "Ghana",
+  "Granada",
+  "Grecia",
+  "Guatemala",
+  "Guinea",
+  "Guinea-Bisáu",
+  "Guinea Ecuatorial",
+  "Guyana",
+  "Haití",
+  "Honduras",
+  "Hungría",
+  "India",
+  "Indonesia",
+  "Irak",
+  "Irán",
+  "Irlanda",
+  "Islandia",
+  "Islas Marshall",
+  "Islas Salomón",
+  "Israel",
+  "Italia",
+  "Jamaica",
+  "Japón",
+  "Jordania",
+  "Kazajistán",
+  "Kenia",
+  "Kirguistán",
+  "Kiribati",
+  "Kuwait",
+  "Laos",
+  "Lesoto",
+  "Letonia",
+  "Líbano",
+  "Liberia",
+  "Libia",
+  "Liechtenstein",
+  "Lituania",
+  "Luxemburgo",
+  "Macedonia del Norte",
+  "Madagascar",
+  "Malasia",
+  "Malaui",
+  "Maldivas",
+  "Malí",
+  "Malta",
+  "Marruecos",
+  "Mauricio",
+  "Mauritania",
+  "México",
+  "Micronesia",
+  "Moldavia",
+  "Mónaco",
+  "Mongolia",
+  "Montenegro",
+  "Mozambique",
+  "Namibia",
+  "Nauru",
+  "Nepal",
+  "Nicaragua",
+  "Níger",
+  "Nigeria",
+  "Noruega",
+  "Nueva Zelanda",
+  "Omán",
+  "Países Bajos",
+  "Pakistán",
+  "Palaos",
+  "Panamá",
+  "Papúa Nueva Guinea",
+  "Paraguay",
+  "Perú",
+  "Polonia",
+  "Portugal",
+  "Reino Unido",
+  "República Centroafricana",
+  "República Checa",
+  "República del Congo",
+  "República Democrática del Congo",
+  "República Dominicana",
+  "Ruanda",
+  "Rumania",
+  "Rusia",
+  "Samoa",
+  "San Cristóbal y Nieves",
+  "San Marino",
+  "San Vicente y las Granadinas",
+  "Santa Lucía",
+  "Santo Tomé y Príncipe",
+  "Senegal",
+  "Serbia",
+  "Seychelles",
+  "Sierra Leona",
+  "Singapur",
+  "Siria",
+  "Somalia",
+  "Sri Lanka",
+  "Suazilandia",
+  "Sudáfrica",
+  "Sudán",
+  "Sudán del Sur",
+  "Suecia",
+  "Suiza",
+  "Surinam",
+  "Tailandia",
+  "Tanzania",
+  "Tayikistán",
+  "Timor Oriental",
+  "Togo",
+  "Tonga",
+  "Trinidad y Tobago",
+  "Túnez",
+  "Turkmenistán",
+  "Turquía",
+  "Tuvalu",
+  "Ucrania",
+  "Uganda",
+  "Uruguay",
+  "Uzbekistán",
+  "Vanuatu",
+  "Vaticano",
+  "Venezuela",
+  "Vietnam",
+  "Yemen",
+  "Yibuti",
+  "Zambia",
+  "Zimbabue",
+];
+
 export default function NuevoDiagnosticoPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>(1);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
@@ -56,6 +254,31 @@ export default function NuevoDiagnosticoPage() {
 
   const canGoStep2 = historiaClinica.trim().length > 12;
   const canGoStep3 = symptoms.length > 0;
+
+  useEffect(() => {
+    const targetStep = searchParams.get("step");
+    if (targetStep === "3") {
+      setStep(3);
+      if (typeof window !== "undefined") {
+        const stored = window.sessionStorage.getItem("medphenai:newDiagDraft");
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored) as { sintomas?: Array<{ description: string; code?: string }> };
+            if (parsed?.sintomas?.length) {
+              setSymptoms(parsed.sintomas.map((item) => ({ description: item.description, code: item.code ?? "" })));
+            } else {
+              setSymptoms(defaultSymptoms.map((symptom) => ({ ...symptom })));
+            }
+          } catch {
+            setSymptoms(defaultSymptoms.map((symptom) => ({ ...symptom })));
+          }
+          window.sessionStorage.removeItem("medphenai:newDiagDraft");
+        } else {
+          setSymptoms(defaultSymptoms.map((symptom) => ({ ...symptom })));
+        }
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     return () => {
@@ -152,7 +375,7 @@ export default function NuevoDiagnosticoPage() {
             </Link>
             <button
               type="button"
-              className="btn-outline inline-flex items-center gap-2 h-10 px-4 rounded-md"
+              className="btn-danger-outline inline-flex items-center gap-2 px-5"
               onClick={() => setShowCancelModal(true)}
             >
               Cancelar
@@ -220,11 +443,29 @@ export default function NuevoDiagnosticoPage() {
                       />
                     </label>
                     <label className="block text-sm font-semibold text-white">
+                      País
+                      <select
+                        value={datosBasicos.pais}
+                        onChange={(event) => setDatosBasicos((prev) => ({ ...prev, pais: event.target.value }))}
+                        className="mt-2 select-lucai"
+                      >
+                        <option value="">Seleccioná</option>
+                        {countries.map((country) => (
+                          <option key={country} value={country}>
+                            {country}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <div className="space-y-5">
+                    <label className="block text-sm font-semibold text-white">
                       Sexo
                       <select
                         value={datosBasicos.sexo}
                         onChange={(event) => setDatosBasicos((prev) => ({ ...prev, sexo: event.target.value }))}
-                        className="mt-2 w-full rounded-xl border border-[var(--lu-border)] bg-[rgba(18,18,18,0.9)] px-4 py-3 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none"
+                        className="mt-2 select-lucai"
                       >
                         <option value="">Seleccioná</option>
                         <option value="femenino">Femenino</option>
@@ -233,9 +474,6 @@ export default function NuevoDiagnosticoPage() {
                         <option value="prefiero_no_decir">Prefiero no decirlo</option>
                       </select>
                     </label>
-                  </div>
-
-                  <div className="space-y-5">
                     <label className="block text-sm font-semibold text-white">
                       Localidad
                       <input
@@ -244,15 +482,6 @@ export default function NuevoDiagnosticoPage() {
                         onChange={(event) =>
                           setDatosBasicos((prev) => ({ ...prev, localidad: event.target.value }))
                         }
-                        className="mt-2 w-full rounded-xl border border-[var(--lu-border)] bg-[rgba(18,18,18,0.9)] px-4 py-3 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none"
-                      />
-                    </label>
-                    <label className="block text-sm font-semibold text-white">
-                      País
-                      <input
-                        type="text"
-                        value={datosBasicos.pais}
-                        onChange={(event) => setDatosBasicos((prev) => ({ ...prev, pais: event.target.value }))}
                         className="mt-2 w-full rounded-xl border border-[var(--lu-border)] bg-[rgba(18,18,18,0.9)] px-4 py-3 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none"
                       />
                     </label>
@@ -303,7 +532,9 @@ export default function NuevoDiagnosticoPage() {
                           className="inline-flex items-center gap-3 rounded-full border border-[var(--lu-border)] bg-[rgba(22,22,22,0.92)] px-4 py-1.5 text-sm text-[var(--lu-text)]"
                         >
                           <span className="font-semibold text-white">{symptom.description}</span>
-                          <span className="text-xs text-[var(--lu-subtle)]">{symptom.code}</span>
+                          {symptom.code && (
+                            <span className="text-xs text-[var(--lu-subtle)]">{symptom.code}</span>
+                          )}
                           <button
                             type="button"
                             className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-[var(--lu-border)] text-xs text-[var(--lu-subtle)] hover:text-white"
@@ -351,7 +582,7 @@ export default function NuevoDiagnosticoPage() {
               {step === 4 && (
                 <div className="space-y-6">
                   <div className="rounded-3xl border border-[var(--lu-border)] bg-[rgba(19,19,19,0.9)] p-7 backdrop-blur">
-                    <p className="text-xs uppercase tracking-[0.32em] text-[var(--lu-subtle)]">Diagnóstico sugerido</p>
+                    <p className="text-xs uppercase tracking-[0.32em] text-[var(--lu-subtle)]">Diagnóstico Final</p>
                     <h2 className="mt-3 text-2xl font-semibold text-white">
                       Sospecha de síndrome metabólico en evolución
                     </h2>
@@ -374,7 +605,7 @@ export default function NuevoDiagnosticoPage() {
                     </button>
                     <button
                       type="button"
-                      className="btn-outline h-11 px-5 rounded-md"
+                      className="btn-success h-11 px-5 rounded-md"
                       onClick={() => setShowCancelModal(true)}
                     >
                       Comenzar otro diagnóstico
@@ -388,7 +619,7 @@ export default function NuevoDiagnosticoPage() {
               <div className="mt-10 flex justify-end">
                 <button
                   type="button"
-                  className="btn-cta-block h-11 px-6 rounded-md flex items-center gap-2 disabled:opacity-50"
+                  className="btn-success h-11 px-6 rounded-md flex items-center gap-2 disabled:opacity-50"
                   onClick={handleContinue}
                   disabled={
                     (step === 1 && !canGoStep1) ||
@@ -435,7 +666,7 @@ export default function NuevoDiagnosticoPage() {
               </button>
               <button
                 type="button"
-                className="btn-cta-block h-10 px-5 rounded-md"
+                className="btn-danger-outline"
                 onClick={handleCancelFlow}
               >
                 Sí, cancelar
