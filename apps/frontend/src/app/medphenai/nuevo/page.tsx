@@ -14,7 +14,7 @@ type Symptom = {
 
 const stepsMeta: Array<{ id: Step; title: string }> = [
   { id: 1, title: "Datos básicos" },
-  { id: 2, title: "Historia clínica" },
+  { id: 2, title: "Historia Clínica" },
   { id: 3, title: "Síntomas" },
   { id: 4, title: "Diagnóstico Final" },
 ];
@@ -232,7 +232,8 @@ export default function NuevoDiagnosticoPage() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [datosBasicos, setDatosBasicos] = useState({
-    edad: "",
+    nombre: "",
+    fechaNacimiento: "",
     sexo: "",
     localidad: "",
     pais: "",
@@ -245,7 +246,8 @@ export default function NuevoDiagnosticoPage() {
 
   const canGoStep1 = useMemo(() => {
     return (
-      datosBasicos.edad.trim() !== "" &&
+      datosBasicos.nombre.trim() !== "" &&
+      datosBasicos.fechaNacimiento.trim() !== "" &&
       datosBasicos.sexo.trim() !== "" &&
       datosBasicos.localidad.trim() !== "" &&
       datosBasicos.pais.trim() !== ""
@@ -431,14 +433,28 @@ export default function NuevoDiagnosticoPage() {
 
               {step === 1 && (
                 <div className="grid gap-6 lg:grid-cols-2">
+                  <div className="lg:col-span-2">
+                    <label className="block text-sm font-semibold text-white">
+                      Nombre o apodo del integrante
+                      <input
+                        type="text"
+                        value={datosBasicos.nombre}
+                        onChange={(event) => setDatosBasicos((prev) => ({ ...prev, nombre: event.target.value }))}
+                        className="mt-2 w-full rounded-xl border border-[var(--lu-border)] bg-[rgba(18,18,18,0.9)] px-4 py-3 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none"
+                        placeholder="Ej. Marcelo, Mamá, Equipo Beta..."
+                      />
+                    </label>
+                  </div>
+
                   <div className="space-y-5">
                     <label className="block text-sm font-semibold text-white">
-                      Edad
+                      Fecha de nacimiento
                       <input
-                        type="number"
-                        min={0}
-                        value={datosBasicos.edad}
-                        onChange={(event) => setDatosBasicos((prev) => ({ ...prev, edad: event.target.value }))}
+                        type="date"
+                        value={datosBasicos.fechaNacimiento}
+                        onChange={(event) =>
+                          setDatosBasicos((prev) => ({ ...prev, fechaNacimiento: event.target.value }))
+                        }
                         className="mt-2 w-full rounded-xl border border-[var(--lu-border)] bg-[rgba(18,18,18,0.9)] px-4 py-3 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none"
                       />
                     </label>
@@ -483,6 +499,7 @@ export default function NuevoDiagnosticoPage() {
                           setDatosBasicos((prev) => ({ ...prev, localidad: event.target.value }))
                         }
                         className="mt-2 w-full rounded-xl border border-[var(--lu-border)] bg-[rgba(18,18,18,0.9)] px-4 py-3 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none"
+                        placeholder="Ciudad o localidad"
                       />
                     </label>
                   </div>
@@ -497,6 +514,7 @@ export default function NuevoDiagnosticoPage() {
                         }
                         rows={4}
                         className="mt-2 w-full rounded-xl border border-[var(--lu-border)] bg-[rgba(18,18,18,0.9)] px-4 py-3 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none resize-none"
+                        placeholder="Resumen clínico, antecedentes familiares, medicación actual..."
                       />
                     </label>
                   </div>
@@ -506,7 +524,7 @@ export default function NuevoDiagnosticoPage() {
               {step === 2 && (
                 <div className="space-y-5">
                   <p className="text-sm text-[var(--lu-subtle)]">
-                    Pegá o escribí la historia clínica relevante. MedPhenAI analizará el texto y extraerá los síntomas
+                    Pegá o escribí la Historia Clínica relevante. MedPhenAI analizará el texto y extraerá los síntomas
                     clave antes de consultar a GenPhenIA.
                   </p>
                   <textarea

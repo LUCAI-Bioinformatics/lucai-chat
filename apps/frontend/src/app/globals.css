@@ -9,6 +9,7 @@
   --lu-border:    #262626;
   --lu-accent:    #ff6900;   /* naranja */
   --lu-amber:     #fcb900;   /* amarillo */
+  --lu-green:     #7bff00;   /* verde LUCAI */
   --lu-cta-grad:  linear-gradient(135deg,var(--lu-amber) 0%,var(--lu-accent) 100%);
   --lu-shadow:    0 20px 60px rgba(0,0,0,.35);
   --lu-radius:    28px;
@@ -110,12 +111,17 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
   display:inline-flex; align-items:center; justify-content:center;
   height:44px; min-width:var(--send-w); padding:0 24px;
   border-radius:12px;
-  background: linear-gradient(135deg,#00c56e 0%,#009f57 100%);
-  color:#0b0b0b; font:inherit; font-weight:700; cursor:pointer;
-  transition: transform .06s ease, filter .2s ease;
+  border:2px solid var(--lu-green);
+  background:transparent;
+  color:var(--lu-green); font:inherit; font-weight:700; cursor:pointer;
+  transition: background-color .2s ease, color .2s ease, transform .06s ease, filter .2s ease;
 }
-#lucai-app .btn-success:hover{ filter:brightness(1.05); }
+#lucai-app .btn-success:hover{
+  background:var(--lu-green);
+  color:#111;
+}
 #lucai-app .btn-success:active{ transform:translateY(1px); }
+#lucai-app .btn-success[disabled]{ cursor:not-allowed; }
 
 #lucai-app .select-lucai{
   appearance:none; -webkit-appearance:none; -moz-appearance:none;
@@ -127,12 +133,36 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
   height:46px;
   color:var(--lu-text);
   font:inherit;
+  cursor:pointer;
   transition:border-color .2s ease, box-shadow .2s ease;
 }
 #lucai-app .select-lucai:focus{
   border-color:var(--lu-accent);
   box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 30%, transparent);
   outline:none;
+}
+
+#lucai-app select:not(.select-lucai){
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  width:100%;
+  border-radius:12px;
+  border:1px solid var(--lu-border);
+  background: rgba(18,18,18,0.92) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23cdd3db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center/14px;
+  padding:0 44px 0 16px;
+  height:46px;
+  color:var(--lu-text);
+  font:inherit;
+  cursor:pointer;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+#lucai-app select:not(.select-lucai):focus{
+  border-color:var(--lu-accent);
+  box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 30%, transparent);
+  outline:none;
+}
+
+#lucai-app input[type="date"]{
+  color-scheme: dark;
 }
 
 #lucai-app .btn-enter{ margin-left: auto; }

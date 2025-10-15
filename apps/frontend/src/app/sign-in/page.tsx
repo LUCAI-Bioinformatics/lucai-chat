@@ -97,7 +97,7 @@ export default function SignInPage() {
           />
 
           <select
-            className="pill-input"
+            className="select-lucai"
             value={country}
             onChange={(event) => setCountry(event.target.value)}
           >
@@ -108,7 +108,7 @@ export default function SignInPage() {
           </select>
 
           <select
-            className="pill-input"
+            className="select-lucai"
             value={province}
             onChange={(event) => setProvince(event.target.value)}
             required

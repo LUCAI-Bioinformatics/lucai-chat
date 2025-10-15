@@ -255,27 +255,18 @@ export default function MedPhenAIPage() {
                   <div className="rounded-3xl border border-[var(--lu-border)] bg-[rgba(19,19,19,0.9)] p-7 backdrop-blur">
                     <div className="space-y-4">
                       <h2 className="text-3xl font-semibold text-white leading-tight">
-                        Phenotyping inteligente para tus equipos clínicos
+                        Diagnóstico asistido para médicos y familias
                       </h2>
                       <p className="text-[var(--lu-subtle)] text-sm leading-relaxed">
-                        MedPhenAI se potencia con{" "}
-                        <a
-                          href="https://genphenai.pages.dev/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline decoration-[color:var(--lu-accent)] underline-offset-4 hover:text-[var(--lu-text)] transition-colors"
-                        >
-                          GenPhenIA
-                        </a>{" "}
-                        para que cualquier persona pueda autenticarse, subir su historia clínica y responder preguntas de
-                        seguimiento hasta obtener una devolución diagnóstica asistida.
+                        MedPhenAI reúne historias clínicas, síntomas y modelos predictivos para que equipos de salud y
+                        personas que buscan respuestas interpreten su cuadro con la guía de GenPhenIA.
                       </p>
-                      <div className="flex flex-wrap items-center gap-3 pt-2">
+                      <div className="flex flex-col gap-3 pt-2">
                         <a
                           href="https://genphenai.pages.dev/"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn-outline h-11 px-5 rounded-md flex items-center gap-2"
+                          className="btn-outline h-11 px-5 rounded-md flex items-center gap-2 self-start"
                         >
                           Abrir GenPhenIA
                           <svg
@@ -293,6 +284,17 @@ export default function MedPhenAIPage() {
                             <path d="M6 4h6v6" />
                           </svg>
                         </a>
+                        <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--lu-subtle)]">
+                          Powered by{" "}
+                          <a
+                            className="underline decoration-[color:var(--lu-accent)] underline-offset-4 hover:text-[var(--lu-text)]"
+                            href="https://lucai.bio/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            LUCAI
+                          </a>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -306,10 +308,10 @@ export default function MedPhenAIPage() {
                       </p>
                     </div>
                     <div className="rounded-3xl border border-[var(--lu-border)] bg-[rgba(19,19,19,0.88)] p-6 backdrop-blur">
-                      <h3 className="text-lg font-semibold mb-2 text-white">Follow-up inteligente</h3>
+                      <h3 className="text-lg font-semibold mb-2 text-white">Conversación inteligente</h3>
                       <p className="text-[var(--lu-subtle)] text-sm leading-relaxed">
-                        GenPhenIA guía preguntas de seguimiento para capturar síntomas clave y enriquecer el fenotipado en
-                        tiempo real.
+                        GenPhenIA guía preguntas de seguimiento para capturar síntomas clave y dejar un registro claro para
+                        profesionales y pacientes.
                       </p>
                     </div>
                     <div className="rounded-3xl border border-[var(--lu-border)] bg-[rgba(19,19,19,0.88)] p-6 backdrop-blur">
@@ -386,7 +388,7 @@ export default function MedPhenAIPage() {
 
                     <div className="mt-6 space-y-6 text-sm text-[var(--lu-subtle)]">
                       <div>
-                        <p className="mb-1 text-xs uppercase tracking-[0.28em] text-[var(--lu-subtle)]">Historia clínica</p>
+                        <p className="mb-1 text-xs uppercase tracking-[0.28em] text-[var(--lu-subtle)]">Historia Clínica</p>
                         <div className="flex items-center gap-2 rounded-2xl border border-[var(--lu-border)] bg-[rgba(21,21,21,0.9)] px-4 py-3">
                           <svg
                             width="18"
@@ -447,7 +449,7 @@ export default function MedPhenAIPage() {
                             />
                             <input
                               type="text"
-                              placeholder="Código HPO"
+                              placeholder="Código HPO (HP:0001027)"
                               value={newSymptom[activeMember.id]?.code ?? ""}
                               onChange={(event) => handleDraftChange(activeMember.id, "code", event.target.value)}
                               className="rounded-xl border border-[var(--lu-border)] bg-[rgba(24,24,24,0.9)] px-4 py-2 text-[var(--lu-text)] focus:border-[var(--lu-accent)] focus:outline-none"
