@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
-type TabId = "overview" | "integrantes" | "datasets" | "alerts";
+type TabId = "overview" | "integrantes";
 
 type Member = {
   id: string;
@@ -14,34 +15,34 @@ type Member = {
   diagnostico: string;
 };
 
-const tabs: Array<{ id: TabId; label: string; hint?: string }> = [
-  { id: "overview", label: "Resumen", hint: "Dashboard" },
+const tabs: Array<{ id: TabId; label: string }> = [
+  { id: "overview", label: "Resumen" },
   { id: "integrantes", label: "Integrantes" },
-  { id: "datasets", label: "Datasets", hint: "Próximamente" },
-  { id: "alerts", label: "Alertas", hint: "Próximamente" },
 ];
+
+const quickLinks = [{ label: "Nuevo Diagnóstico +", href: "/medphenai/nuevo" }];
 
 const integrantes: Member[] = [
   {
-    id: "ana",
-    nombre: "Ana Rivas",
-    historiaClinica: "HC_Metabolismo_AnaRivas.pdf",
-    sintomas: ["Fatiga persistente", "Dolor abdominal", "Cambios en peso"],
+    id: "marcelo",
+    nombre: "Marcelo Martí",
+    historiaClinica: "HC_Cardiometabolica_MMarcí.pdf",
+    sintomas: ["Dolor torácico leve", "Cansancio", "Antecedente familiar"],
     diagnostico:
       "Probable síndrome metabólico en observación. Recomendar seguimiento quincenal y control glucémico.",
   },
   {
-    id: "diego",
-    nombre: "Diego Suárez",
-    historiaClinica: "HC_BiopsiaHepatica_DSuarez.pdf",
+    id: "franco",
+    nombre: "Franco Brunello",
+    historiaClinica: "HC_Hepatica_FBrunello.pdf",
     sintomas: ["Molestias hepáticas", "Sueño irregular"],
     diagnostico:
       "Indicadores iniciales de esteatosis hepática. Sugerido plan de nutrición ampliado + perfil lipidémico.",
   },
   {
-    id: "lucia",
-    nombre: "Lucía Ávila",
-    historiaClinica: "HC_Neuro_LAvila.pdf",
+    id: "mate",
+    nombre: "Mate Alvarez",
+    historiaClinica: "HC_Neuro_MAlvarez.pdf",
     sintomas: ["Migrañas tensionales", "Déficit de concentración"],
     diagnostico:
       "Compatibilidad con migraña con aura. Revisar historial farmacológico y ajustar plan preventivo mensual.",
@@ -51,6 +52,7 @@ const integrantes: Member[] = [
 export default function MedPhenAIPage() {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [selectedMember, setSelectedMember] = useState<Member>(integrantes[0]);
+  const router = useRouter();
 
   const activeMember = useMemo(() => {
     if (activeTab !== "integrantes") return null;
@@ -97,13 +99,10 @@ export default function MedPhenAIPage() {
         <section className="mx-auto max-w-7xl w-full px-5 pt-16 pb-24 flex-1">
           <div className="rounded-[32px] border border-[var(--lu-border)] bg-[color-mix(in_oklab,var(--lu-bg)_82%,#161616)] px-6 py-8 shadow-[0_40px_120px_rgba(0,0,0,0.35)]">
             <div className="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-[var(--lu-border)]">
-              <div className="space-y-1">
-                <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[var(--lu-subtle)]">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-[var(--lu-accent)]" aria-hidden />
-                  MedPhenAI Suite
-                </span>
-                <h1 className="text-2xl font-semibold text-white">Panel central</h1>
-              </div>
+              <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[var(--lu-subtle)]">
+                <span className="inline-flex h-2 w-2 rounded-full bg-[var(--lu-accent)]" aria-hidden />
+                MedPhenAI Suite
+              </span>
             </div>
 
             <div className="flex flex-wrap gap-3 border-b border-[var(--lu-border)] pb-5 pt-6">
@@ -136,6 +135,17 @@ export default function MedPhenAIPage() {
                   </button>
                 );
               })}
+
+              {quickLinks.map((quick) => (
+                <button
+                  key={quick.href}
+                  type="button"
+                  onClick={() => router.push(quick.href)}
+                  className="relative rounded-2xl px-5 py-2.5 text-sm font-semibold transition-all duration-150 text-[var(--lu-accent)] border border-[color-mix(in_oklab,var(--lu-accent)_55%,#8c3d00)] bg-[rgba(31,20,10,0.65)] hover:bg-[rgba(31,20,10,0.9)]"
+                >
+                  {quick.label}
+                </button>
+              ))}
             </div>
 
             <div className="pt-8">
@@ -182,23 +192,6 @@ export default function MedPhenAIPage() {
                             <path d="M6 4h6v6" />
                           </svg>
                         </a>
-                        <Link href="/chat" className="btn-cta-block h-11 px-6 rounded-md flex items-center gap-2">
-                          Consultar con LUCAI
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.6"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            aria-hidden="true"
-                          >
-                            <path d="M5 11l6-6" />
-                            <path d="M7 5h4v4" />
-                          </svg>
-                        </Link>
                       </div>
                     </div>
                   </div>
@@ -232,9 +225,21 @@ export default function MedPhenAIPage() {
               {activeTab === "integrantes" && activeMember && (
                 <div className="grid gap-6 lg:grid-cols-[0.42fr_0.58fr]">
                   <div className="space-y-3">
-                    <p className="text-xs uppercase tracking-[0.32em] text-[var(--lu-subtle)]">
-                      Selecciona un integrante
-                    </p>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs uppercase tracking-[0.32em] text-[var(--lu-subtle)]">
+                        Selecciona un integrante
+                      </p>
+                      <button
+                        type="button"
+                        className="flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--lu-accent)_55%,#8c3d00)] px-3 py-1.5 text-xs font-semibold text-[var(--lu-accent)] hover:bg-[rgba(31,20,10,0.65)] transition-colors"
+                        onClick={() => router.push("/medphenai/nuevo")}
+                      >
+                        <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[var(--lu-accent)] text-[var(--lu-bg)] text-[11px] font-bold">
+                          +
+                        </span>
+                        Nuevo
+                      </button>
+                    </div>
                     <div className="flex flex-col gap-3">
                       {integrantes.map((member) => {
                         const isSelected = member.id === activeMember.id;
@@ -330,33 +335,6 @@ export default function MedPhenAIPage() {
                   </div>
                 </div>
               )}
-
-              {(activeTab === "datasets" || activeTab === "alerts") && (
-                <div className="rounded-[28px] border border-[var(--lu-border)] bg-[rgba(16,16,16,0.92)] p-10 text-center shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--lu-border)] bg-[rgba(21,21,21,0.9)] text-[var(--lu-accent)]">
-                    <svg
-                      width="28"
-                      height="28"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 16h.01" />
-                      <path d="M12 8v4" />
-                    </svg>
-                  </div>
-                  <h3 className="mt-5 text-xl font-semibold text-white">Feature en construcción</h3>
-                  <p className="mt-3 text-sm text-[var(--lu-subtle)]">
-                    Estamos preparando paneles específicos para {activeTab === "datasets" ? "datasets clínicos y ómicos" : "alertas asistidas"}.
-                    Muy pronto tendrás métricas accionables y workflows asistidos directamente desde MedPhenAI.
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         </section>
@@ -373,7 +351,7 @@ export default function MedPhenAIPage() {
             </p>
           </div>
           <div>
-            <h2 className="section-title">¿Necesitás una demo?</h2>
+            <h2 className="section-title">Contactanos</h2>
             <p className="section-p">
               <a href="mailto:mateo@lucai.bio" className="nav-link">
                 mateo@lucai.bio
