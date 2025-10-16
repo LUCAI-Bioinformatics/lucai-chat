@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -81,6 +82,13 @@ export default function LoginPage() {
 
           <button type="submit" className="btn-outline btn-enter">Enter</button>
         </form>
+
+        <p className="mt-6 text-center text-sm text-[color:var(--lu-subtle)]">
+          ¿Primera vez en LUCAI?{" "}
+          <Link href="/sign-up" className="nav-link inline-flex items-center">
+            Crear cuenta
+          </Link>
+        </p>
       </div>
     </main>
   );

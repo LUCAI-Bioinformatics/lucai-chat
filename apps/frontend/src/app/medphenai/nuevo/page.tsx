@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -222,7 +222,7 @@ const countries = [
   "Zimbabue",
 ];
 
-export default function NuevoDiagnosticoPage() {
+function NuevoDiagnosticoScreen() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>(1);
@@ -463,7 +463,7 @@ export default function NuevoDiagnosticoPage() {
                       <select
                         value={datosBasicos.pais}
                         onChange={(event) => setDatosBasicos((prev) => ({ ...prev, pais: event.target.value }))}
-                        className="mt-2 combo-field select-lucai"
+                        className="mt-2 combo-field"
                       >
                         <option value="">Seleccioná</option>
                         {countries.map((country) => (
@@ -481,7 +481,7 @@ export default function NuevoDiagnosticoPage() {
                       <select
                         value={datosBasicos.sexo}
                         onChange={(event) => setDatosBasicos((prev) => ({ ...prev, sexo: event.target.value }))}
-                        className="mt-2 combo-field select-lucai"
+                        className="mt-2 combo-field"
                       >
                         <option value="">Seleccioná</option>
                         <option value="femenino">Femenino</option>
@@ -694,5 +694,20 @@ export default function NuevoDiagnosticoPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function NuevoDiagnosticoPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="page-root relative min-h-screen flex items-center justify-center">
+          <div className="hex-zoomed" aria-hidden />
+          <div className="text-sm text-[color:var(--lu-subtle)]">Preparando MedPhenAI…</div>
+        </main>
+      }
+    >
+      <NuevoDiagnosticoScreen />
+    </Suspense>
   );
 }
