@@ -463,7 +463,7 @@ export default function NuevoDiagnosticoPage() {
                       <select
                         value={datosBasicos.pais}
                         onChange={(event) => setDatosBasicos((prev) => ({ ...prev, pais: event.target.value }))}
-                        className="mt-2 select-lucai"
+                        className="mt-2 combo-field select-lucai"
                       >
                         <option value="">Seleccioná</option>
                         {countries.map((country) => (
@@ -481,7 +481,7 @@ export default function NuevoDiagnosticoPage() {
                       <select
                         value={datosBasicos.sexo}
                         onChange={(event) => setDatosBasicos((prev) => ({ ...prev, sexo: event.target.value }))}
-                        className="mt-2 select-lucai"
+                        className="mt-2 combo-field select-lucai"
                       >
                         <option value="">Seleccioná</option>
                         <option value="femenino">Femenino</option>

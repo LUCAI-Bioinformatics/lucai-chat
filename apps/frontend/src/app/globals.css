@@ -123,18 +123,48 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
 #lucai-app .btn-success:active{ transform:translateY(1px); }
 #lucai-app .btn-success[disabled]{ cursor:not-allowed; }
 
+#lucai-app .combo-field{
+  display:inline-flex;
+  align-items:center;
+  width:100%;
+  border-radius:14px;
+  border:1.5px solid color-mix(in oklab, var(--lu-border) 80%, #3a3a3a);
+  background: color-mix(in oklab, var(--lu-bg) 80%, #161616);
+  color:var(--lu-text);
+  font:inherit;
+  height:48px;
+  padding:0 44px 0 16px;
+  transition:border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+  cursor:pointer;
+}
+#lucai-app .combo-field:hover{
+  border-color: color-mix(in oklab, var(--lu-accent) 45%, #3a3a3a);
+}
+#lucai-app .combo-field:focus{
+  border-color: var(--lu-accent);
+  box-shadow:0 0 0 3px color-mix(in oklab, var(--lu-accent) 30%, transparent);
+  outline:none;
+}
+#lucai-app .combo-field option{
+  background:#141414;
+  color:var(--lu-text);
+}
+
 #lucai-app .select-lucai{
   appearance:none; -webkit-appearance:none; -moz-appearance:none;
   width:100%;
-  border-radius:12px;
-  border:1px solid var(--lu-border);
-  background: rgba(18,18,18,0.92) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23cdd3db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center/14px;
+  border-radius:14px;
+  border:1.5px solid color-mix(in oklab, var(--lu-border) 80%, #3a3a3a);
+  background: color-mix(in oklab, var(--lu-bg) 80%, #161616) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23cdd3db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center/14px;
   padding:0 44px 0 16px;
-  height:46px;
+  height:48px;
   color:var(--lu-text);
   font:inherit;
   cursor:pointer;
-  transition:border-color .2s ease, box-shadow .2s ease;
+  transition:border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+#lucai-app .select-lucai:hover{
+  border-color: color-mix(in oklab, var(--lu-accent) 45%, #3a3a3a);
 }
 #lucai-app .select-lucai:focus{
   border-color:var(--lu-accent);
@@ -145,15 +175,15 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
 #lucai-app select:not(.select-lucai){
   appearance:none; -webkit-appearance:none; -moz-appearance:none;
   width:100%;
-  border-radius:12px;
-  border:1px solid var(--lu-border);
-  background: rgba(18,18,18,0.92) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23cdd3db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center/14px;
+  border-radius:14px;
+  border:1.5px solid color-mix(in oklab, var(--lu-border) 80%, #3a3a3a);
+  background: color-mix(in oklab, var(--lu-bg) 80%, #161616) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23cdd3db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center/14px;
   padding:0 44px 0 16px;
-  height:46px;
+  height:48px;
   color:var(--lu-text);
   font:inherit;
   cursor:pointer;
-  transition:border-color .2s ease, box-shadow .2s ease;
+  transition:border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
 }
 #lucai-app select:not(.select-lucai):focus{
   border-color:var(--lu-accent);
@@ -408,5 +438,5 @@ body{ background:var(--lu-bg); color:var(--lu-text); }
 
 /* Headings con Sora */
 h1, h2, .hero-title {
-  font-family: var(--font-sora), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: var(--font-space), var(--font-sora), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
 }
