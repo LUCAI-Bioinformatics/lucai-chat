@@ -97,7 +97,7 @@ export default function SignInPage() {
           />
 
           <select
-            className="combo-field select-lucai"
+            className="combo-field"
             value={country}
             onChange={(event) => setCountry(event.target.value)}
           >
@@ -108,7 +108,7 @@ export default function SignInPage() {
           </select>
 
           <select
-            className="combo-field select-lucai"
+            className="combo-field"
             value={province}
             onChange={(event) => setProvince(event.target.value)}
             required
