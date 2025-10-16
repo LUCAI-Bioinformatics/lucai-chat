@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build:lucai-css": "postcss styles/vendor/lucai/index.css -o public/vendor/lucai.scoped.css --config postcss.lucai.cjs",
+    "build:lucai-css": "postcss styles/vendor/lucai/index.css -o public/vendor/lucai.scoped.css --config postcss.lucai.mjs",
     "predev": "npm run build:lucai-css",
     "prebuild": "npm run build:lucai-css",
     "dev": "cross-env NEXT_DISABLE_TURBOPACK=1 next dev",
